@@ -82,9 +82,8 @@ class GenPartDumper():
     self.ntauonic  = 0
     self.nevents   = 0
 
-  def setupGenParts(self,event):
+  def setupGenParts(self,particles):
 
-    particles = Collection(event,'GenPart')
     for i, particle in enumerate(particles):
       particle.daughters = []
       particle.moth = None
@@ -96,7 +95,7 @@ class GenPartDumper():
         particle.moth = particles[particle.genPartIdxMother]
         particles[particle.genPartIdxMother].daughters.append(particle)
 
-  def analyze(self,event):
+  def analyze(self, particles):
     """Dump gen information for each gen particle in given event."""
     print("\n%s Event %s %s"%('-'*10,event.event,'-'*70))
     self.nevents += 1
@@ -104,7 +103,6 @@ class GenPartDumper():
     tauonic = False
     bosons = [ ]
     taus = [ ]
-    particles = Collection(event,'GenPart')
     #particles = Collection(event,'LHEPart')
     print(" \033[4m%7s %7s %7s %7s %7s %7s %7s %7s %8s %9s %10s  \033[0m"%(
       "index","pdgId","moth","mothId","dR","pt","eta","status","prompt","taudecay","last copy"))

@@ -116,22 +116,24 @@ for iEntry in range(0, nEntries):
   #--------------------------------
   # Add more variables to GenParts
   #--------------------------------
-  # genPartDumper.setupGenParts(event)
+  GenPartAll = Collection(event,'GenPart')
+  genPartDumper.setupGenParts(GenPartAll)
 
   #------------------------
   # Dump GenParts info
   #------------------------
-  # genPartDumper.analyze(event)
+  # genPartDumper.analyze(GenPartAll)
 
   #----------------------------------------
-  # Loop over gen parts and get the two 
+  # Loop over gen parts and get the two
   # (last copies) of the W-bosons
   #----------------------------------------
   genWbosons = []
-  GenPartAll = Collection(event,'GenPart')
+
   for i,gp in enumerate(GenPartAll):
     if abs(gp.pdgId) == 24 and gp.statusflag('isLastCopy') and gp.statusflag('isPrompt'):
       genWbosons.append(gp)
+      print(len(gp.daughters))
 
   #----------------------------------------------
   # Skip event if we have less than two.
