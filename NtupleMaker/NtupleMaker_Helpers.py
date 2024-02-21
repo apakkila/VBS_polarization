@@ -251,6 +251,23 @@ for year in eraYears:
   xs_Dict[year+"_EWKWplus2Jets_WToQQ"] = 28.72
   xs_Dict[year+"_EWKWminus2Jets_WToQQ"] = 9.792
 
+
+def GetTriggers(eraName):
+#
+# Got these triggers from https://cmshltinfo.app.cern.ch
+# These are triggers that are active the whole year AND unprescaled.
+#
+  triggerPaths = []
+  if "UL17" in eraName:
+    triggerPaths += [
+      "HLT_PFHT1050",
+      "HLT_PFJet500",
+      "HLT_PFJet550",
+      "HLT_AK8PFJet500",
+      "HLT_AK8PFJet550",
+    ]
+  return triggerPaths
+
 def GetSampleEventSumOfWeights(sampleRunsFiles):
   #########################################
   #
