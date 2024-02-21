@@ -135,27 +135,37 @@ for year in eraYears:
   # AnaNote: AN2020_083_v4.pdf
   #
   #************************
+  #
+  # VBS WW (EWK, QCD)
+  #
   xs_Dict[year+"_VBS_WWSSTo4J_EWK"] = 0.1249
   xs_Dict[year+"_VBS_WWSSTo4J_QCD"] = 0.1087
-
   xs_Dict[year+"_VBS_WWOSTo4J_EWK"] = 1.8930
-
+  xs_Dict[year+"_VBS_WWOSTo4J_QCD"] = 160.1
+  #
+  # VBS ZW (EWK, QCD)
+  #
+  xs_Dict[year+"_VBS_ZWTo4J_EWK"] = 0.1663
+  xs_Dict[year+"_VBS_ZWTo4J_QCD"] = 4.2340
   xs_Dict[year+"_VBS_ZWTo2B2J_EWK"] = 0.123
   xs_Dict[year+"_VBS_ZWTo2B2J_QCD"] = 1.261
   xs_Dict[year+"_VBS_ZWTo2JnoB2J_QCD"] = 4.733
-
-  xs_Dict[year+"_VBS_ZWTo4J_EWK"] = 0.1663
-  xs_Dict[year+"_VBS_ZWTo4J_QCD"] = 4.2340
-
+  #
+  # VBS ZZ (EWK, QCD)
+  #
   xs_Dict[year+"_VBS_ZZTo4J_QCD"] = 1.0840
-
+  #
+  # VBS VV (EWK+QCD)
+  #
   xs_Dict[year+"_VBS_WWSSTo4J_EWK_QCD"] = 0.2421
   xs_Dict[year+"_VBS_WWOSTo4J_EWK_QCD"] = 161.4
   xs_Dict[year+"_VBS_ZWTo2B2J_EWK_QCD"] = 1.385
   xs_Dict[year+"_VBS_ZWTo4J_EWK_QCD"] = 4.405
   xs_Dict[year+"_VBS_ZZTo4J_EWK_QCD"] = 1.136
   xs_Dict[year+"_VBS_ZWTo2JnoB2J_EWK_QCD"] = 5.19
-
+  #
+  # VBS VV (aQGC)
+  #
   xs_Dict[year+"_VBS_aQGC_WWOSTo4J"] = 9.701
   xs_Dict[year+"_VBS_aQGC_WWSSmTo4J"] = 0.1306
   xs_Dict[year+"_VBS_aQGC_WWSSpTo4J"] = 0.9043
