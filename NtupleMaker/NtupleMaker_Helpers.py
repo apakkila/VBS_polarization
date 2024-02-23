@@ -247,9 +247,9 @@ for year in eraYears:
   # VBF EWK-W/Z
   #
   #************************
-  xs_Dict[year+"_EWKWminus2Jets_WToQQ"] = 19.19
-  xs_Dict[year+"_EWKWplus2Jets_WToQQ"] = 28.72
-  xs_Dict[year+"_EWKWminus2Jets_WToQQ"] = 9.792
+  xs_Dict[year+"_EWKWm2Jets_WToQQ"] = 19.19
+  xs_Dict[year+"_EWKWp2Jets_WToQQ"] = 28.72
+  xs_Dict[year+"_EWKZ2Jets_ZToQQ"] = 9.792
 
 
 def GetTriggers(eraName):
