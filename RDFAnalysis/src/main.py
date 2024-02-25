@@ -44,6 +44,9 @@ if __name__ == "__main__":
     ROOT.RDF.RunGraphs(hists)
 
     # Create the output file
+    # Check that output directory exists
+    if not ROOT.gSystem.AccessPathName(config["General"]["outputdir"]):
+        ROOT.gSystem.mkdir(config["General"]["outputdir"])
     outfile = ROOT.TFile(config["General"]["outputdir"]+ "/"+config["General"]["outputfile"]+".root", "RECREATE")
     for idx, hist in enumerate(hists):
         # Make a directory based on the first part of the hists name
