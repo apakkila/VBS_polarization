@@ -166,7 +166,7 @@ class VBSAnalyzer:
         return rdf
     
     def do_VBS(self) -> None:
-        print("Doing VBS histograms")
+        print("Creating VBS histograms")
         for sample in self.sample_names:
             all_rdf = self.rdf
             selected_rdf = self.__cut_Flag((self.__cut_VBS(self.rdf))).Filter(f'sampleName == "{sample}"')

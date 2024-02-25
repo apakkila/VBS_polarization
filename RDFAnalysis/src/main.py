@@ -44,10 +44,10 @@ if __name__ == "__main__":
     ROOT.RDF.RunGraphs(hists)
 
     # Create the output file
-    outfile = ROOT.TFile(config["General"]["outputdir"]+ "/"+config["General"]["sample_name"]+"_output.root", "RECREATE")
+    outfile = ROOT.TFile(config["General"]["outputdir"]+ "/"+config["General"]["outputfile"]+".root", "RECREATE")
     for idx, hist in enumerate(hists):
         # Make a directory based on the first part of the hists name
-        # This could use some improving, all of MC goes to same dir.
+        # This could use some improving, all of MC goes to same dir. currently
         if not outfile.Get(hist.GetName().split("_")[0]):
             outfile.mkdir(hist.GetName().split("_")[0])
         outfile.cd(hist.GetName().split("_")[0])

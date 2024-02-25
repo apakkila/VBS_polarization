@@ -3,7 +3,7 @@ fromSpec=inputfiles/DT_samples.json
 isMC=0
 variableInfo=inputfiles/variables.json
 outputdir=output/files
-outfile=myfile
+outputfile=myfile
 
 [Distributed]
 nThreads=12
