@@ -192,14 +192,14 @@ for year in eraYears:
   # V->qq + jets
   #
   #************************
-  xs_Dict[year+"_WJetsToQQ_HT-200to400"] = 2565.0
-  xs_Dict[year+"_WJetsToQQ_HT-400to600"] = 277.2
-  xs_Dict[year+"_WJetsToQQ_HT-600to800"] = 59.1
-  xs_Dict[year+"_WJetsToQQ_HT-800toInf"] = 28.75
-  xs_Dict[year+"_ZJetsToQQ_HT-200to400"] = 1013.0
-  xs_Dict[year+"_ZJetsToQQ_HT-400to600"] = 114.1
-  xs_Dict[year+"_ZJetsToQQ_HT-600to800"] = 25.35
-  xs_Dict[year+"_ZJetsToQQ_HT-800toInf"] = 12.92
+  xs_Dict[year+"_WJetsToQQ_HT200to400"] = 2565.0
+  xs_Dict[year+"_WJetsToQQ_HT400to600"] = 277.2
+  xs_Dict[year+"_WJetsToQQ_HT600to800"] = 59.1
+  xs_Dict[year+"_WJetsToQQ_HT800toInf"] = 28.75
+  xs_Dict[year+"_ZJetsToQQ_HT200to400"] = 1013.0
+  xs_Dict[year+"_ZJetsToQQ_HT400to600"] = 114.1
+  xs_Dict[year+"_ZJetsToQQ_HT600to800"] = 25.35
+  xs_Dict[year+"_ZJetsToQQ_HT800toInf"] = 12.92
 
   #************************
   #
@@ -381,23 +381,33 @@ def MakeSampleID(sampleName):
     elif "EWKWplus2Jets_WToQQ"        in sampleName: ID = "0601"
     elif "EWKWminus2Jets_WToQQ"       in sampleName: ID = "0602"
     elif "VBS_WWSSTo4J_EWK"           in sampleName: ID = "0700"
-    elif "VBS_WWSSTo4J_QCD"           in sampleName: ID = "0700"
-    elif "VBS_WWOSTo4J_EWK"           in sampleName: ID = "0700"
+    elif "VBS_WWSSTo4J_QCD"           in sampleName: ID = "0701"
+    elif "VBS_WWOSTo4J_EWK"           in sampleName: ID = "0702"
+    elif "VBS_WWOSTo4J_QCD"           in sampleName: ID = "0703"
     elif "VBS_ZWTo2B2J_EWK"           in sampleName: ID = "0800"
-    elif "VBS_ZWTo2B2J_QCD"           in sampleName: ID = "0800"
-    elif "VBS_ZWTo2JnoB2J_QCD"        in sampleName: ID = "0800"
-    elif "VBS_ZWTo4J_EWK"             in sampleName: ID = "0800"
-    elif "VBS_ZWTo4J_QCD"             in sampleName: ID = "0800"
+    elif "VBS_ZWTo2B2J_QCD"           in sampleName: ID = "0801"
+    elif "VBS_ZWTo2JnoB2J_QCD"        in sampleName: ID = "0802"
+    elif "VBS_ZWTo4J_EWK"             in sampleName: ID = "0803"
+    elif "VBS_ZWTo4J_QCD"             in sampleName: ID = "0804"
     elif "VBS_ZZTo4J_QCD"             in sampleName: ID = "0900"
-    elif "VBS_aQGC_WWOSTo4J"          in sampleName: ID = "1000"
-    elif "VBS_aQGC_WWSSmTo4J"         in sampleName: ID = "1000"
-    elif "VBS_aQGC_WWSSpTo4J"         in sampleName: ID = "1000"
-    elif "VBS_aQGC_ZZTo2JnoB2J"       in sampleName: ID = "1100"
-    elif "VBS_aQGC_ZZTo4J"            in sampleName: ID = "1100"
-    elif "VBS_WWOSTo4J_EWK_QCD"       in sampleName: ID = "1200"
-    elif "VBS_WWSSTo4J_EWK_QCD"       in sampleName: ID = "1200"
-    elif "VBS_ZWTo2B2J_EWK_QCD"       in sampleName: ID = "1300"
-    elif "VBS_ZWTo2JnoB2J_EWK_QCD"    in sampleName: ID = "1300"
-    elif "VBS_ZZTo4J_EWK_QCD"         in sampleName: ID = "1400"
-    elif "VBS_ZWTo4J_EWK_QCD"         in sampleName: ID = "1400"
+    elif "VBS_aQGC_WWOSTo4J"          in sampleName: ID = "1001"
+    elif "VBS_aQGC_WWSSmTo4J"         in sampleName: ID = "1002"
+    elif "VBS_aQGC_WWSSpTo4J"         in sampleName: ID = "1003"
+    elif "VBS_aQGC_ZZTo2JnoB2J"       in sampleName: ID = "1004"
+    elif "VBS_aQGC_ZZTo4J"            in sampleName: ID = "1005"
+    elif "VBS_WWOSTo4J_EWK_QCD"       in sampleName: ID = "1006"
+    elif "VBS_WWSSTo4J_EWK_QCD"       in sampleName: ID = "1007"
+    elif "VBS_ZWTo2B2J_EWK_QCD"       in sampleName: ID = "1008"
+    elif "VBS_ZWTo2JnoB2J_EWK_QCD"    in sampleName: ID = "1009"
+    elif "VBS_ZZTo4J_EWK_QCD"         in sampleName: ID = "1010"
+    elif "VBS_ZWTo4J_EWK_QCD"         in sampleName: ID = "1011"
+    elif "WJetsToQQ_HT200to400"       in sampleName: ID = "1101"
+    elif "WJetsToQQ_HT400to600"       in sampleName: ID = "1102"
+    elif "WJetsToQQ_HT600to800"       in sampleName: ID = "1103"
+    elif "WJetsToQQ_HT800toInf"       in sampleName: ID = "1104"
+    elif "ZJetsToQQ_HT200to400"       in sampleName: ID = "1200"
+    elif "ZJetsToQQ_HT400to600"       in sampleName: ID = "1201"
+    elif "ZJetsToQQ_HT600to800"       in sampleName: ID = "1202"
+    elif "ZJetsToQQ_HT800toInf"       in sampleName: ID = "1203"
+
   return year+ID
