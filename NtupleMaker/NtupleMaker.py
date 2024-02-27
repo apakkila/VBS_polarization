@@ -367,7 +367,7 @@ def MakeNtuple(inDir, sampleName, isBatch, systVar="Nominal"):
   tau21Def="[](const float t2,const float t1){if(t1>0.) return float(t2/t1); else return -1.f;});"
   df = df.Define("FatJet_tau21",      f"return Map(FatJet_tau2,FatJet_tau1,{tau21Def}")
   df = df.Define("FatJet_passID",     "FatJet_jetId & (1<<1)")
-  df = df.Define("FatJet_isSignal",   "(FatJet_p4_pt > 200.f) && (abs(FatJet_p4_eta) < 2.4f)")
+  df = df.Define("FatJet_isSignal",   "(FatJet_p4_pt > 200.f) && (abs(FatJet_p4_eta) < 2.4f) && FatJet_passID")
   #
   #
   #
