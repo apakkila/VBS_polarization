@@ -27,6 +27,12 @@ def getFinalCopy(part):
   return getFinalCopy(desc) if desc else part
 
 
+def getFirstCopy(part):
+  parent = None
+  if part.mother != None and part.mother.pdgId == part.pdgId:
+    parent = part.mother
+  return getFirstCopy(parent) if parent else part
+
 def hasMother(part,pdgId):
   if abs(part.moth.pdgId) == pdgId:
     return True
@@ -74,7 +80,6 @@ def getdecaychain(part,genparts,indent=0,depth=999):
       ndaus += 1
   return chain
 
-
 # DUMPER MODULE
 class GenPartDumper():
   def __init__(self):
@@ -86,16 +91,16 @@ class GenPartDumper():
 
     for i, particle in enumerate(particles):
       particle.daughters = []
-      particle.moth = None
+      particle.mother = None
       particle.mothPdgId = 0
 
     for i, particle in enumerate(particles):
       if particle.genPartIdxMother >= 0 and particle.genPartIdxMother < particles._len:
         particle.mothPdgId = particles[particle.genPartIdxMother].pdgId
-        particle.moth = particles[particle.genPartIdxMother]
+        particle.mother = particles[particle.genPartIdxMother]
         particles[particle.genPartIdxMother].daughters.append(particle)
 
-  def analyze(self, particles):
+  def analyze(self, event, particles):
     """Dump gen information for each gen particle in given event."""
     print("\n%s Event %s %s"%('-'*10,event.event,'-'*70))
     self.nevents += 1

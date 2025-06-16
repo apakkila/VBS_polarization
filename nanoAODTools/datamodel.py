@@ -16,6 +16,14 @@ statusflags = { # GenPart_statusFlags, stored bitwise (powers of 2):
   'isHardProcess':                 (1 << 7),
 }
 
+genPartMass = {
+    1: 0.00216,
+    2: 0.00467,
+    3: 0.09340,
+    4: 1.27000,
+    5: 4.18000,
+}
+
 class Event:
     """Class that allows seeing an entry of a PyROOT TTree as an Event"""
 
@@ -89,13 +97,16 @@ class Object:
     def __getitem__(self, attr):
         return self.__getattr__(attr)
 
-    def p4(self, corr_pt=None):
+    def p4(self, corr_pt=None, usePDGIdMass=False):
         """Create TLorentzVector for this particle."""
         ret = ROOT.TLorentzVector()
+        mass = self.mass
+        if usePDGIdMass and abs(self.pdgId) in genPartMass:
+            mass = genPartMass[abs(self.pdgId)]
         if corr_pt == None:
-            ret.SetPtEtaPhiM(self.pt, self.eta, self.phi, self.mass)
+            ret.SetPtEtaPhiM(self.pt, self.eta, self.phi, mass)
         else:
-            ret.SetPtEtaPhiM(corr_pt, self.eta, self.phi, self.mass)
+            ret.SetPtEtaPhiM(corr_pt, self.eta, self.phi, mass)
         return ret
 
     def DeltaR(self, other):
