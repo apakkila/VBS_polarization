@@ -22,12 +22,12 @@ def main():
   #
   #
   if "Nominal" in option:
-    INDIR   = "/eos/user/n/nbinnorj/VBSAllHadAna/Ntuples/"
-    OUTDIR  = "/eos/user/n/nbinnorj/VBSAllHadAna/MergedNtuples/"
+    # INDIR   = "/eos/user/n/nbinnorj/VBSAllHadAna/Ntuples/"
+    # OUTDIR  = "/eos/user/n/nbinnorj/VBSAllHadAna/MergedNtuples/"
     # INDIR   = "/eos/user/n/nbinnorj/VBSAllHadAna/Ntuples_VCandMassCut/"
     # OUTDIR  = "/eos/user/n/nbinnorj/VBSAllHadAna/MergedNtuples_VCandMassCut/"
-    # INDIR   = "/eos/user/n/nbinnorj/VBSAllHadAna/Ntuples_VCandMassCut_AddGenPart/"
-    # OUTDIR  = "/eos/user/n/nbinnorj/VBSAllHadAna/MergedNtuples_VCandMassCut_AddGenPart/"
+    INDIR   = "/eos/user/n/nbinnorj/VBSAllHadAna/Ntuples_VCandMassCut_AddGenPart/"
+    OUTDIR  = "/eos/user/n/nbinnorj/VBSAllHadAna/MergedNtuples_VCandMassCut_AddGenPart/"
     RunMergeNtuples(INDIR,OUTDIR)
   #
   #

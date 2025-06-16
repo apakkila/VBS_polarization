@@ -45,8 +45,8 @@ EOSCMS="root://eoscms.cern.ch/"
 TMPDIR=os.getenv("TMPDIR")
 
 prod_tag=""
-# prod_tag+="_VCandMassCut"
-# prod_tag+="_AddGenPart"
+prod_tag+="_VCandMassCut"
+prod_tag+="_AddGenPart"
 
 outDirNominalTrees = f"/eos/user/n/nbinnorj/VBSAllHadAna/Ntuples{prod_tag}/"
 outDirSystTrees  = f"/eos/user/n/nbinnorj/VBSAllHadAna/NtuplesSyst{prod_tag}/"
@@ -531,7 +531,8 @@ def MakeNtuple(inDir, sampleName, isBatch, systVar="Nominal"):
     ##
     ## AK8 Jet Mass Cuts
     ###### OldDef: msoftdrop_def = f"VCand{VCandName}_msoftdrop"
-    msoftdrop_def = f"{VCandName}_msoftdrop_corrAK8JEC"
+    ###### msoftdrop_def = f"{VCandName}_msoftdrop_corrAK8JEC"
+    msoftdrop_def = f"{VCandName}_msoftdrop"
     print(f"{msoftdrop_def=}")
     df = df.Define(f"{VCandName}_msoftdrop_forTag", msoftdrop_def)
 
@@ -848,7 +849,7 @@ def MakeNtuple(inDir, sampleName, isBatch, systVar="Nominal"):
   ##
   ## Uncomment these lines if you want to store the entire GenPart
   ##
-  if ("AddGenPart" in prod_tag) and isNominal: # TEMP
+  if isMC and ("AddGenPart" in prod_tag) and isNominal: # TEMP
     branchList +=[
       "nGenPart","GenPart_pt","GenPart_eta","GenPart_phi","GenPart_mass",
       "GenPart_pdgId","GenPart_status","GenPart_statusFlags",
