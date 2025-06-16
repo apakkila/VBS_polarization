@@ -1,0 +1,41 @@
+executable            = RunAtBatch.sh
+universe              = vanilla
+output                = BatchLog/Gen.$(SAMPLE).$(ClusterId).$(ProcId).out
+error                 = BatchLog/Gen.$(SAMPLE).$(ClusterId).$(ProcId).err
+log                   = BatchLog/Gen.$(ClusterId).log
+stream_output         = True
+stream_error          = True
+
+environment = "JOBWORKDIR=$ENV(PWD)"
+#+JobFlavour  = "longlunch"
++JobFlavour  = "workday"
+request_cpus = 1
+
+arguments = $(SAMPLE) 120
+queue SAMPLE from (
+#WPJJWMJJjj_EWK_LO_4f_mmjj150
+#WPMJJWPMJJjj_EWK_LO_4f_mmjj150
+#ZJJWPMJJjj_EWK_LO_4f_mmjj150
+#ZJJZJJjj_EWK_LO_4f_mmjj150
+#ZNuNuWPMJJjj_EWK_LO_4f_mmjj150
+#ZNuNuZJJjj_EWK_LO_4f_mmjj150
+#
+#WPJJWMJJjj_QCD_LO_4f_mmjj150
+#WPMJJWPMJJjj_QCD_LO_4f_mmjj150
+#ZJJWPMJJjj_QCD_LO_4f_mmjj150
+#ZJJZJJjj_QCD_LO_4f_mmjj150
+#ZNuNuWPMJJjj_QCD_LO_4f_mmjj150
+#ZNuNuZJJjj_QCD_LO_4f_mmjj150
+#
+WPJJWMJJjj_EWK_LO_4f_mmjj150_ptW300
+WPMJJWPMJJjj_EWK_LO_4f_mmjj150_ptW300
+ZJJWPMJJjj_EWK_LO_4f_mmjj150_ptV300
+ZJJZJJjj_EWK_LO_4f_mmjj150_ptZ300
+#
+WPJJWMJJjj_EWK_LO_4f_mmjj150_mWW500
+WPMJJWPMJJjj_EWK_LO_4f_mmjj150_mWW500
+ZJJWPMJJjj_EWK_LO_4f_mmjj150_mZW500
+ZJJZJJjj_EWK_LO_4f_mmjj150_mZZ500
+)
+
+
