@@ -1,7 +1,7 @@
 import ROOT
 import os
 
-# Enable multi-threading for ROOT (optional, improves performance)
+# Enable multi-threading for ROOT
 ROOT.EnableImplicitMT(4)
 
 # List of sample files
