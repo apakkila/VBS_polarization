@@ -4,7 +4,7 @@ void stacked_histogram()
     const char* output_dir = "output_histograms";
     struct stat info;
     if (stat(output_dir, &info) != 0) {
-        mkdir(output_dir, 0777);  // Create the directory with read/write/execute permissions
+        mkdir(output_dir, 0777);
     }
 
     // Open the .root files
