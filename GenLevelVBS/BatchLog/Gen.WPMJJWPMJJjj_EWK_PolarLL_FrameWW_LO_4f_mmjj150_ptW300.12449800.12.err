@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/afs/cern.ch/user/a/apakkila/VBS_polarization/GenLevelVBS/ProcessNano.py", line 37, in <module>
+    with open(txtFilePath) as f:
+         ^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: './samples/WPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300.txt'

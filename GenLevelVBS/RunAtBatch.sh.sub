@@ -11,7 +11,7 @@ environment = "JOBWORKDIR=$ENV(PWD)"
 +JobFlavour  = "workday"
 request_cpus = 1
 
-arguments = $(SAMPLE) 120
+arguments = $(SAMPLE) -1
 queue SAMPLE from (
 #WPJJWMJJjj_EWK_LO_4f_mmjj150
 #WPMJJWPMJJjj_EWK_LO_4f_mmjj150
