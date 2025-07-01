@@ -1,0 +1,230 @@
+
+Information related to SubJet0:
+
+V0_SubJet0_UParTAK4RegPtRawCorr: Float_t
+V0_SubJet0_UParTAK4RegPtRawCorrNeutrino: Float_t
+V0_SubJet0_UParTAK4RegPtRawRes: Float_t
+V0_SubJet0_UParTAK4V1RegPtRawCorr: Float_t
+V0_SubJet0_UParTAK4V1RegPtRawCorrNeutrino: Float_t
+V0_SubJet0_UParTAK4V1RegPtRawRes: Float_t
+
+UPar = uncorrected parameters or updated parameters
+TAK4 = likely Anti-kT jet clustering algorithm with radius R=0.4
+RegPtRawCorr = regularized raw transverse momentum correction
+RegPtRawCorrNeutrino = correction accounting for neutrino correction
+RegPtRawRes = resolution of the raw transverse momentum
+V1 = version of the UParTAK4 algorithm
+
+V0_SubJet0_area: Float_t
+= jet are that is used in pieup corrections and jet energy scale calibrations
+
+V0_SubJet0_btagDeepFlavB: Float_t
+V0_SubJet0_btagUParTAK4B: Float_t
+= variables for b-tagging algorithms
+
+V0_SubJet0_eta: Float_t
+= pseudorapidity of the subjet
+
+V0_SubJet0_hadronFlavour: UChar_t
+= flavor of the hadron associated with the subjet
+
+V0_SubJet0_idx: Int_t
+V0_SubJet0_mass: Float_t
+= invariant mass of the subjet calculated from its energy and momentum components
+
+V0_SubJet0_n2b1: Float_t
+= N-subjettiness measure for 2 subjets
+V0_SubJet0_n3b1: Float_t
+= N-subjettiness measure for 3 subjets
+
+
+V0_SubJet0_nBHadrons: UChar_t
+= number of b-hadrons associated with the subjet
+V0_SubJet0_nCHadrons: UChar_t
+= number of c-hadrons associated with the subjet
+
+
+V0_SubJet0_phi: Float_t
+= azimuthal angle of the subjet
+V0_SubJet0_pt: Float_t
+= transverse momentum of the subjet
+
+V0_SubJet0_rawFactor: Float_t
+= correction factor applied to the raw energy of the subjet
+V0_SubJet0_subGenJetAK8Idx: Short_t
+= index linking the subjet to its parent AK8 jet in the generator-level simulation
+
+Taus related to N-subjettiness, decribes the subjet reconstruction with different amount of taus
+
+V0_SubJet0_tau1: Float_t
+V0_SubJet0_tau2: Float_t
+V0_SubJet0_tau3: Float_t
+V0_SubJet0_tau4: Float_t
+
+
+Information related to SubJet1 (similar to SubJet0):
+
+V0_SubJet1_UParTAK4RegPtRawCorr: Float_t
+V0_SubJet1_UParTAK4RegPtRawCorrNeutrino: Float_t
+V0_SubJet1_UParTAK4RegPtRawRes: Float_t
+V0_SubJet1_UParTAK4V1RegPtRawCorr: Float_t
+V0_SubJet1_UParTAK4V1RegPtRawCorrNeutrino: Float_t
+V0_SubJet1_UParTAK4V1RegPtRawRes: Float_t
+V0_SubJet1_area: Float_t
+V0_SubJet1_btagDeepFlavB: Float_t
+V0_SubJet1_btagUParTAK4B: Float_t
+V0_SubJet1_eta: Float_t
+V0_SubJet1_hadronFlavour: UChar_t
+V0_SubJet1_idx: Int_t
+V0_SubJet1_mass: Float_t
+V0_SubJet1_n2b1: Float_t
+V0_SubJet1_n3b1: Float_t
+V0_SubJet1_nBHadrons: UChar_t
+V0_SubJet1_nCHadrons: UChar_t
+V0_SubJet1_phi: Float_t
+V0_SubJet1_pt: Float_t
+V0_SubJet1_rawFactor: Float_t
+V0_SubJet1_subGenJetAK8Idx: Short_t
+V0_SubJet1_tau1: Float_t
+V0_SubJet1_tau2: Float_t
+V0_SubJet1_tau3: Float_t
+V0_SubJet1_tau4: Float_t
+
+
+Information related to leading jet:
+
+V0_area: Float_t
+= jet area used for pileup corrections and jet energy scale calibrations
+V0_chEmEF: Float_t
+= fraction of the jet's energy carried by charged electromagnetic particles
+V0_chHEF: Float_t
+= fraction of the jet's energy carried by charged hadronic particles
+V0_chMultiplicity: Short_t
+= number of charged particles in the jet
+V0_electronIdx3SJ: Short_t
+= index linking the jet to an electron in the 3-subjet system
+V0_eta: Float_t
+= pseudorapidity of the jet
+V0_genJetAK8Idx: Short_t
+= index linking the jet to its generator-level AK8 jet
+V0_hadronFlavour: UChar_t
+V0_hfEmEF: Float_t
+V0_hfHEF: Float_t
+V0_idx: Int_t
+V0_lsf3: Float_t
+= likely refers to linear soft-drop factor for 3 subjets
+V0_mass: Float_t
+V0_msoftdrop: Float_t
+= soft drop mass of the jet
+V0_muEF: Float_t
+= fraction of the jet's energy carried by muons
+V0_muonIdx3SJ: Short_t
+V0_n2b1: Float_t
+V0_n3b1: Float_t
+V0_nConstituents: UChar_t
+V0_neEmEF: Float_t
+V0_neHEF: Float_t
+V0_neMultiplicity: Short_t
+
+
+
+V0_globalParT3_QCD: Float_t
+V0_globalParT3_TopbWev: Float_t
+V0_globalParT3_TopbWmv: Float_t
+V0_globalParT3_TopbWq: Float_t
+V0_globalParT3_TopbWqq: Float_t
+= score for identifying a top quark decay where the b-quark and W boson decay into two quarks
+V0_globalParT3_TopbWtauhv: Float_t
+V0_globalParT3_WvsQCD: Float_t
+V0_globalParT3_XWW3q: Float_t
+V0_globalParT3_XWW4q: Float_t
+= score identifying a boosted WW system decaying into four quarks
+V0_globalParT3_XWWqqev: Float_t
+V0_globalParT3_XWWqqmv: Float_t
+V0_globalParT3_Xbb: Float_t
+V0_globalParT3_Xcc: Float_t
+V0_globalParT3_Xcs: Float_t
+V0_globalParT3_Xqq: Float_t
+V0_globalParT3_Xtauhtaue: Float_t
+V0_globalParT3_Xtauhtauh: Float_t
+V0_globalParT3_Xtauhtaum: Float_t
+V0_globalParT3_massCorrGeneric: Float_t
+V0_globalParT3_massCorrX2p: Float_t
+V0_globalParT3_withMassTopvsQCD: Float_t
+V0_globalParT3_withMassWvsQCD: Float_t
+V0_globalParT3_withMassZvsQCD: Float_t
+
+
+
+V0_p4: ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<double> >
+V0_p4.fCoordinates: ROOT::Math::PtEtaPhiM4D<double>
+V0_p4.fCoordinates.fEta: Double_t
+V0_p4.fCoordinates.fM: Double_t
+V0_p4.fCoordinates.fPhi: Double_t
+V0_p4.fCoordinates.fPt: Double_t
+
+
+
+
+V0_particleNetLegacy_QCD: Float_t
+= likelihood of a jet originating from QCD background
+V0_particleNetLegacy_Xbb: Float_t
+= likelihood of a jet originating from a boosted b-quark jet
+V0_particleNetLegacy_Xcc: Float_t
+= likelihood of a jet originating from a boosted c-quark jet
+V0_particleNetLegacy_Xqq: Float_t
+= likelihood of a jet originating from a boosted quark-quark jet
+V0_particleNetLegacy_mass: Float_t
+= mass of the jet
+
+
+
+For distinguising jets from the QCD background:
+
+V0_particleNetWithMass_H4qvsQCD: Float_t
+= ParticleNet score for distinguising a Higgs boson decaying into four quarks from QCD background
+V0_particleNetWithMass_HbbvsQCD: Float_t
+= ParticleNet score for distinguising a Higgs boson decaying into b-quarks from QCD background
+V0_particleNetWithMass_HccvsQCD: Float_t
+= ParticleNet score for distinguising a Higgs boson decaying into c-quarks from QCD background
+V0_particleNetWithMass_QCD: Float_t
+= ParticleNet score indicating the likelihood that the jet originated from QCD background
+V0_particleNetWithMass_TvsQCD: Float_t
+= ParticleNet score for distinguising a top quark jet from QCD background
+V0_particleNetWithMass_WvsQCD: Float_t
+= ParticleNet score for distinguising W boson jet from QCD background
+V0_particleNetWithMass_ZvsQCD: Float_t
+= ParticleNet score for distinguising Z boson jet from QCD background
+
+
+
+
+
+V0_particleNet_QCD: Float_t
+V0_particleNet_QCD0HF: Float_t
+V0_particleNet_QCD1HF: Float_t
+V0_particleNet_QCD2HF: Float_t
+V0_particleNet_WVsQCD: Float_t
+V0_particleNet_XbbVsQCD: Float_t
+V0_particleNet_XccVsQCD: Float_t
+V0_particleNet_XggVsQCD: Float_t
+V0_particleNet_XqqVsQCD: Float_t
+= ParticleNet score for identifying a boosted quark-quark jet from QCD background
+V0_particleNet_XteVsQCD: Float_t
+V0_particleNet_XtmVsQCD: Float_t
+V0_particleNet_XttVsQCD: Float_t
+V0_particleNet_massCorr: Float_t
+
+
+V0_phi: Float_t
+V0_pt: Float_t
+V0_ptheta: Float_t
+V0_rawFactor: Float_t
+V0_subJetIdx1: Short_t
+V0_subJetIdx2: Short_t
+V0_tau1: Float_t
+V0_tau2: Float_t
+V0_tau3: Float_t
+V0_tau4: Float_t
+V0_z0: Float_t
+V0_z1: Float_t
