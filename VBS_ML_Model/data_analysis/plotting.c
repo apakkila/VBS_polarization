@@ -1,7 +1,7 @@
 void stacked_histogram()
 {
     // Create the output directory if it doesn't exist
-    const char* output_dir = "output_histograms";
+    const char* output_dir = "output_histograms_visualized";
     struct stat info;
     if (stat(output_dir, &info) != 0) {
         mkdir(output_dir, 0777);

@@ -39,7 +39,7 @@ for sample_name in sample_list:
     # Create histograms
     histosDict["h_VV_deta_" + sample_name] = df_root.Histo1D(("h_VV_deta", "deta distribution", 100, 0, 5), "VV_deta")
     histosDict["h_VV_dphi_" + sample_name] = df_root.Histo1D(("h_VV_dphi", "dphi distribution", 50, 2, 3.2), "VV_dphi")
-    histosDict["h_VV_mVV_" + sample_name] = df_root.Histo1D(("h_VV_mVV", "dmVV distribution", 200, 400, 3500), "VV_mVV")
+    histosDict["h_VV_mVV_" + sample_name] = df_root.Histo1D(("h_VV_mVV", "mVV distribution", 200, 400, 3500), "VV_mVV")
 
     # Data for z_j from both of the subjest
     histosDict["h_V0_z_j_" + sample_name] = df_root.Histo1D(("h_V0_z_j", "z_j", 100, 0.4, 1), "V0_z_j")
