@@ -4,27 +4,38 @@ import os
 # Enable multi-threading for ROOT
 ROOT.EnableImplicitMT(4)
 
-# List of sample files
-sample_list = [
-    "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
-]
-
 # Define the path to the data files
 data_path = "/eos/user/a/apakkila/VBS_ML_project/data"
 
-# Ensure the output directory exists
-output_dir = "./output_histograms"
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+# List of sample files, comment out either SS or OS
+#sample_list = "SS"
+sample_list = "OS"
+
+if sample_list=="SS":
+    samples = [
+    "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+    "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+    "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
+    ]
+    # Ensure the output directory exists
+    output_dir = "./output_histograms_SS"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+elif sample_list=="OS":
+    samples = [
+    "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+    "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+    "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+    "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
+    ]
+
+    # Ensure the output directory exists
+    output_dir = "./output_histograms_OS"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
 # Loop over each sample in the sample list
-for sample_name in sample_list:
+for sample_name in samples:
     print(f"Processing sample: {sample_name}")
 
     # File path for the current sample
