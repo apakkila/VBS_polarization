@@ -8,8 +8,8 @@ ROOT.EnableImplicitMT(4)
 data_path = "/eos/user/a/apakkila/VBS_ML_project/data"
 
 # List of sample files, comment out either SS or OS
-#sample_list = "SS"
-sample_list = "OS"
+sample_list = "SS"
+#sample_list = "OS"
 
 if sample_list=="SS":
     samples = [
@@ -113,7 +113,7 @@ for sample_name in samples:
 
     # Save histograms to a ROOT file
     for hName in histosDict:
-        outFile = f"{output_dir}/Histo_{hName}.root"
+        outFile = f"{output_dir}/{hName}.root"
         print(f"Saving histograms in {outFile}")
         outHisto = ROOT.TFile(outFile, "RECREATE")
         histosDict[hName].Write()
