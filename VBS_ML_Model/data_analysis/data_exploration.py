@@ -5,11 +5,11 @@ import os
 ROOT.EnableImplicitMT(4)
 
 # Define the path to the data files
-data_path = "/eos/user/a/apakkila/VBS_ML_project/data"
+data_path = "/eos/user/a/apakkila/VBS_ML_project/data/processed_samples"
 
 # List of sample files, comment out either SS or OS
-sample_list = "SS"
-#sample_list = "OS"
+#sample_list = "SS"
+sample_list = "OS"
 
 if sample_list=="SS":
     samples = [
@@ -18,7 +18,7 @@ if sample_list=="SS":
     "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
     ]
     # Ensure the output directory exists
-    output_dir = "./output_histograms_SS"
+    output_dir = os.path.join(data_path, "output_histograms_SS")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 elif sample_list=="OS":
@@ -30,7 +30,7 @@ elif sample_list=="OS":
     ]
 
     # Ensure the output directory exists
-    output_dir = "./output_histograms_OS"
+    output_dir = os.path.join(data_path, "output_histograms_OS")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
