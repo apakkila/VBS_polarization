@@ -69,46 +69,46 @@ for sample_name in samples:
     # Create histograms
 
     # V0 and V1
-    histosDict["h_V0_p_theta_" + sample_name] = df_root.Histo1D(("h_V0_p_theta", "p_theta distribution", 100, 0, 1), "V0_p_theta")
-    histosDict["h_V1_p_theta_" + sample_name] = df_root.Histo1D(("h_V1_p_theta", "p_theta distribution", 100, 0, 1), "V1_p_theta")
+    histosDict["h_V0_p_theta_" + sample_name] = df_root.Histo1D(("h_V0_p_theta", "p_theta distribution", 120, 0, 0.95), "V0_p_theta")
+    histosDict["h_V1_p_theta_" + sample_name] = df_root.Histo1D(("h_V1_p_theta", "p_theta distribution", 120, 0, 0.95), "V1_p_theta")
 
     histosDict["h_V0_z_j_" + sample_name] = df_root.Histo1D(("h_V0_z_j", "z_j", 100, 0.4, 1), "V0_z_j")
-    histosDict["h_V1_z_j_" + sample_name] = df_root.Histo1D(("h_V1_z_j", "z_j", 100, 0.4, 1), "V1_z_j")
+    histosDict["h_V1_z_j_" + sample_name] = df_root.Histo1D(("h_V1_z_j", "z_j", 100, 0.45, 1.1), "V1_z_j")
 
-    histosDict["h_V0_pt_" + sample_name] = df_root.Histo1D(("h_V0_pt", "V0_pt", 100, 0.4, 1), "V0_pt")
-    histosDict["h_V1_pt_" + sample_name] = df_root.Histo1D(("h_V1_pt", "V1_pt", 100, 0.4, 1), "V1_pt")
+    histosDict["h_V0_pt_" + sample_name] = df_root.Histo1D(("h_V0_pt", "V0_pt", 100, 390, 1300), "V0_pt")
+    histosDict["h_V1_pt_" + sample_name] = df_root.Histo1D(("h_V1_pt", "V1_pt", 100, 390, 1300), "V1_pt")
 
-    histosDict["h_V0_eta_" + sample_name] = df_root.Histo1D(("h_V0_eta", "V0_eta", 100, 0.4, 1), "V0_eta")
-    histosDict["h_V1_eta_" + sample_name] = df_root.Histo1D(("h_V1_eta", "V1_eta", 100, 0.4, 1), "V1_eta")
+    histosDict["h_V0_eta_" + sample_name] = df_root.Histo1D(("h_V0_eta", "V0_eta", 100, -2.5, 2.5), "V0_eta")
+    histosDict["h_V1_eta_" + sample_name] = df_root.Histo1D(("h_V1_eta", "V1_eta", 100, -2.5, 2.5), "V1_eta")
     
-    histosDict["h_V0_phi_" + sample_name] = df_root.Histo1D(("h_V0_phi", "V0_phi", 100, 0.4, 1), "V0_phi")
-    histosDict["h_V1_phi_" + sample_name] = df_root.Histo1D(("h_V1_phi", "V1_phi", 100, 0.4, 1), "V1_phi")
+    histosDict["h_V0_phi_" + sample_name] = df_root.Histo1D(("h_V0_phi", "V0_phi", 100, -3.2, 3.2), "V0_phi")
+    histosDict["h_V1_phi_" + sample_name] = df_root.Histo1D(("h_V1_phi", "V1_phi", 100, -3.2, 3.2), "V1_phi")
     
-    histosDict["h_V0_mass_" + sample_name] = df_root.Histo1D(("h_V0_mass", "V0_mass", 100, 0.4, 1), "V0_mass")
-    histosDict["h_V1_mass_" + sample_name] = df_root.Histo1D(("h_V1_mass", "V1_mass", 100, 0.4, 1), "V1_mass")
+    histosDict["h_V0_mass_" + sample_name] = df_root.Histo1D(("h_V0_mass", "V0_mass", 150, 60, 200), "V0_mass")
+    histosDict["h_V1_mass_" + sample_name] = df_root.Histo1D(("h_V1_mass", "V1_mass", 150, 60, 180), "V1_mass")
 
     # VV
-    histosDict["h_VV_deta_" + sample_name] = df_root.Histo1D(("h_VV_deta", "deta distribution", 100, 0, 5), "VV_deta")
-    histosDict["h_VV_dphi_" + sample_name] = df_root.Histo1D(("h_VV_dphi", "dphi distribution", 50, 2, 3.2), "VV_dphi")
-    histosDict["h_VV_mVV_" + sample_name] = df_root.Histo1D(("h_VV_mVV", "mVV distribution", 200, 400, 3500), "VV_mVV")
+    histosDict["h_VV_deta_" + sample_name] = df_root.Histo1D(("h_VV_deta", "deta distribution", 100, -0.1, 4.5), "VV_deta")
+    histosDict["h_VV_dphi_" + sample_name] = df_root.Histo1D(("h_VV_dphi", "dphi distribution", 100, 1.95, 3.16), "VV_dphi")
+    histosDict["h_VV_mVV_" + sample_name] = df_root.Histo1D(("h_VV_mVV", "mVV distribution", 150, 500, 3800), "VV_mVV")
 
     # TagJJ
-    histosDict["h_TagJJ_deta_" + sample_name] = df_root.Histo1D(("h_TagJJ_deta", "TagJJ deta distribution", 100, 0, 5), "TagJJ_deta")
-    histosDict["h_TagJJ_dphi_" + sample_name] = df_root.Histo1D(("h_TagJJ_dphi", "TagJJ dphi distribution", 50, 2, 3.2), "TagJJ_dphi")
-    histosDict["h_TagJJ_mJJ_" + sample_name] = df_root.Histo1D(("h_TagJJ_mJJ", "TagJJ mJJ distribution", 200, 400, 3500), "TagJJ_mJJ")
+    histosDict["h_TagJJ_deta_" + sample_name] = df_root.Histo1D(("h_TagJJ_deta", "TagJJ deta distribution", 120, 2.4, 10), "TagJJ_deta")
+    histosDict["h_TagJJ_dphi_" + sample_name] = df_root.Histo1D(("h_TagJJ_dphi", "TagJJ dphi distribution", 70, -0.1, 3.25), "TagJJ_dphi")
+    histosDict["h_TagJJ_mJJ_" + sample_name] = df_root.Histo1D(("h_TagJJ_mJJ", "TagJJ mJJ distribution", 200, 400, 6000), "TagJJ_mJJ")
 
     # TagJet pair
-    histosDict["h_TagJet0_pt_" + sample_name] = df_root.Histo1D(("h_TagJet0_pt", "TagJet0_pt", 100, 0.4, 1), "TagJet0_pt")
-    histosDict["h_TagJet1_pt_" + sample_name] = df_root.Histo1D(("h_TagJet1_pt", "TagJet1_pt", 100, 0.4, 1), "TagJet1_pt")
+    histosDict["h_TagJet0_pt_" + sample_name] = df_root.Histo1D(("h_TagJet0_pt", "TagJet0_pt", 120, 50, 800), "TagJet0_pt")
+    histosDict["h_TagJet1_pt_" + sample_name] = df_root.Histo1D(("h_TagJet1_pt", "TagJet1_pt", 120, 50, 500), "TagJet1_pt")
 
-    histosDict["h_TagJet0_eta_" + sample_name] = df_root.Histo1D(("h_TagJet0_eta", "TagJet0_eta", 100, 0.4, 1), "TagJet0_eta")
-    histosDict["h_TagJet1_eta_" + sample_name] = df_root.Histo1D(("h_TagJet1_eta", "TagJet1_eta", 100, 0.4, 1), "TagJet1_eta")
+    histosDict["h_TagJet0_eta_" + sample_name] = df_root.Histo1D(("h_TagJet0_eta", "TagJet0_eta", 120, -5.1, 5.1), "TagJet0_eta")
+    histosDict["h_TagJet1_eta_" + sample_name] = df_root.Histo1D(("h_TagJet1_eta", "TagJet1_eta", 120, -5.1, 5.1), "TagJet1_eta")
 
-    histosDict["h_TagJet0_phi_" + sample_name] = df_root.Histo1D(("h_TagJet0_phi", "TagJet0_phi", 100, 0.4, 1), "TagJet0_phi")
-    histosDict["h_TagJet1_phi_" + sample_name] = df_root.Histo1D(("h_TagJet1_phi", "TagJet1_phi", 100, 0.4, 1), "TagJet1_phi")
+    histosDict["h_TagJet0_phi_" + sample_name] = df_root.Histo1D(("h_TagJet0_phi", "TagJet0_phi", 120, -3.2, 3.2), "TagJet0_phi")
+    histosDict["h_TagJet1_phi_" + sample_name] = df_root.Histo1D(("h_TagJet1_phi", "TagJet1_phi", 120, -3.2, 3.2), "TagJet1_phi")
 
-    histosDict["h_TagJet0_mass_" + sample_name] = df_root.Histo1D(("h_TagJet0_mass", "TagJet0_mass", 100, 0.4, 1), "TagJet0_mass")
-    histosDict["h_TagJet1_mass_" + sample_name] = df_root.Histo1D(("h_TagJet1_mass", "TagJet1_mass", 100, 0.4, 1), "TagJet1_mass")
+    histosDict["h_TagJet0_mass_" + sample_name] = df_root.Histo1D(("h_TagJet0_mass", "TagJet0_mass", 150, 0, 125), "TagJet0_mass")
+    histosDict["h_TagJet1_mass_" + sample_name] = df_root.Histo1D(("h_TagJet1_mass", "TagJet1_mass", 150, 0, 80), "TagJet1_mass")
 
 
     # Save histograms to a ROOT file
