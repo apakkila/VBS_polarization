@@ -77,58 +77,20 @@ for sample_file in sample_files:
     label = sample_labels[sample_file]
 
     # Compute covariance matrix for the sample (variables vs variables)
-    cov_matrix = np.cov(matrix, rowvar=False)
+    corr_matrix = np.corrcoef(matrix, rowvar=False)
 
     # Convert to DataFrame for plotting
-    df_cov = pd.DataFrame(cov_matrix, index=variable_names, columns=variable_names)
+    df_corr = pd.DataFrame(corr_matrix, index=variable_names, columns=variable_names)
 
     # Plot heatmap
     plt.figure(figsize=(10, 8))
-    sns.heatmap(df_cov, annot=True, fmt=".2f", cmap="coolwarm",
+    sns.heatmap(df_corr, annot=True, fmt=".2f", cmap="coolwarm",
                 xticklabels=variable_names, yticklabels=variable_names, square=True)
-    plt.title(f"Within-Sample Covariance\n{sample}: {label}")
+    plt.title(f"Within-Sample Correlation\n{sample}: {label}")
     plt.tight_layout()
 
     # Save heatmap
-    heatmap_path = os.path.join(output_dir_within_sample, f"within_cov_{label}.png")
+    heatmap_path = os.path.join(output_dir_within_sample, f"within_corr_{label}.png")
     plt.savefig(heatmap_path)
     plt.close()
-    print(f"Saved within-sample covariance heatmap: {heatmap_path}")
-
-
-# Cross-sample covariance between variables
-for source_file in sample_files:
-    source_matrix = sample_matrices[source_file]
-    source_label = sample_labels[source_file]
-
-    for target_file in sample_files:
-        if source_file == target_file:
-            continue  # skip self-covariances
-
-        target_matrix = sample_matrices[target_file]
-        target_label = sample_labels[target_file]
-
-        cov_matrix = np.zeros((len(variable_names), len(variable_names)))
-
-        for i, var_src in enumerate(variable_names):
-            for j, var_tgt in enumerate(variable_names):
-                x = source_matrix[:, i]
-                y = target_matrix[:, j]
-                cov = np.cov(x, y)[0, 1]
-                cov_matrix[i, j] = cov
-
-        # Convert to DataFrame
-        df_cross = pd.DataFrame(cov_matrix, index=variable_names, columns=variable_names)
-
-        # Plot heatmap (no fixed vmin/vmax, since covariance is unbounded)
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(df_cross, annot=True, fmt=".2f", cmap="coolwarm",
-                    xticklabels=variable_names, yticklabels=variable_names, square=True)
-        plt.title(f"Cross-Sample Covariance\n{sample}: {source_label} → {target_label}")
-        plt.tight_layout()
-
-        # Save heatmap
-        heatmap_path = os.path.join(output_dir_between_sample, f"cross_cov_{source_label}_vs_{target_label}.png")
-        plt.savefig(heatmap_path)
-        plt.close()
-        print(f"Saved cross-covariance heatmap: {heatmap_path}")
+    print(f"Saved within-sample correlation heatmap: {heatmap_path}")
