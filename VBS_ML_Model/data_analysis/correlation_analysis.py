@@ -69,14 +69,14 @@ for sample_file in sample_matrices:
     sample_matrices[sample_file] = sample_matrices[sample_file][:min_length, :]
 
 
-# Compute and save within-sample covariance matrices
+# Compute and save within-sample correlation matrices
 os.makedirs(output_dir_within_sample, exist_ok=True)
 
 for sample_file in sample_files:
     matrix = sample_matrices[sample_file]
     label = sample_labels[sample_file]
 
-    # Compute covariance matrix for the sample (variables vs variables)
+    # Compute correlation matrix for the sample (variables vs variables)
     corr_matrix = np.corrcoef(matrix, rowvar=False)
 
     # Convert to DataFrame for plotting
