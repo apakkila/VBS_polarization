@@ -1,19 +1,21 @@
 # Polarization state analysis for Vector Boson Scattering
 
-# This document contains the implementation for a Self-Organizing Map (SOM) model
+# This document contains the implementation for a Gaussian Mixture Model (GMM) model
 # for analyzing polarization states in Vector Boson Scattering (VBS) processes.
 
 # Importing required libraries
-import ROOT
-from minisom import MiniSom
 import numpy as np
 import pandas as pd
 import os
 import pickle
 from sklearn.utils import resample
+from sklearn.mixture import GaussianMixture
+import matplotlib.pyplot as plt
+from sklearn.metrics import adjusted_rand_score
 
-#sample = "OS"
-sample = "SS"
+# Choose which sample the model is trained on
+sample = "OS"
+#sample = "SS"
 
 # Section 1: Data loading
 
@@ -22,8 +24,11 @@ numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays"
 
 if sample == "OS":
     # Directory to save the trained SOM model weights
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/weights/OS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/gmm/weights/OS"
     os.makedirs(output_dir, exist_ok=True)
+
+    plots_dir = "/eos/user/a/apakkila/VBS_ML_project/cluster_plots/gmm/OS"
+    os.makedirs(plots_dir, exist_ok=True)
 
     # List of sample files to load
     sample_files = [
@@ -33,8 +38,11 @@ if sample == "OS":
         "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz"
     ]
 elif sample == "SS":
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/weights/SS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/gmm/weights/SS"
     os.makedirs(output_dir, exist_ok=True)
+
+    plots_dir = "/eos/user/a/apakkila/VBS_ML_project/cluster_plots/gmm/SS"
+    os.makedirs(plots_dir, exist_ok=True)
 
     sample_files = [
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
@@ -59,8 +67,7 @@ for sample_file in sample_files:
         array = data_dict[sample_file][key]
         print(f"  {key}: {len(array)}")
 
-# number_of_samples_per_file = data_dict[sample_files[1]]['V0_p_theta'].shape[0]
-number_of_samples_per_file = 10000
+number_of_samples_per_file = data_dict[sample_files[2]]['V0_p_theta'].shape[0]
 print(f"Number of samples per file: {number_of_samples_per_file}") # total of 75177 samples in each file
 number_of_samples = len(data_dict) * number_of_samples_per_file
 print(number_of_samples)
@@ -71,70 +78,30 @@ training_data = np.concatenate([
     for sample_file in sample_files
 ])
 
+training_data = training_data[:, [0, 1, 2, 3]]
+
 # Initialize labels for the training data
-
-labels = np.array(['LL'] * number_of_samples_per_file + ['LT'] * number_of_samples_per_file + ['TL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
-
-
-# Section 2: Defining the model parameters for the SOM
-
-# Define the dimensions of the SOM grid computed as sqrt(5*sqrt(number of samples))
-som_shape = (int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))), int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))))
-
-# Initial sigma value for the SOM
-# sigma = np.sqrt(som_shape[0]**2 + som_shape[1]**2)
-
-# sigma = 0.40507
-# lr = 0.44976
-
-sigma = 1.5
-lr = 0.5
-topology = 'rectangular'
-
-# Initialize the MiniSom model
-som = MiniSom(
-    x=som_shape[0], 
-    y=som_shape[1], 
-    input_len=training_data.shape[1], 
-    sigma=sigma, 
-    learning_rate=lr, 
-    decay_function='asymptotic_decay',
-    neighborhood_function='gaussian',
-    topology=topology,
-    sigma_decay_function='asymptotic_decay'
-)
+if sample == "OS":
+    labels = np.array(['LL'] * number_of_samples_per_file + ['LT'] * number_of_samples_per_file + ['TL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
+elif sample == "SS":
+    labels = np.array(['LL'] * number_of_samples_per_file + ['LTTL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
 
 
-# Initialize the SOM weights - use either pca_weights_init or random_weights_init
+# Section 2: defining the GMM
 
-# Use a subset of the training data for initializing weights
-subset = resample(training_data, n_samples=int(0.02 * len(training_data)), random_state=42)
-print("Starting to initialize SOM weights.")
-som.pca_weights_init(subset)
-print("SOM weights initialized.")
+gmm = GaussianMixture(n_components=4)
+gmm.fit(training_data)
 
+cluster_labels = gmm.predict(training_data)
 
-# Section 3: Training the SOM
+score = adjusted_rand_score(labels, cluster_labels)
+print(f"Adjusted Rand Index: {score:.3f}")
 
-print("Training the SOM...")
-som.train(
-    data=training_data, 
-    num_iteration=100,
-    verbose=True,
-    use_epochs=True,
-    random_order=True
-)
-print("SOM training completed.")
+plt.scatter(training_data[:, 0], training_data[:, 2], c=cluster_labels, cmap='viridis')
+plt.xlabel('V0_p_theta')
+plt.ylabel('V0_z_j')
+plt.title('Gaussian Mixture Model Clustering')
 
-
-# Section 4: Saving the trained SOM model
-
-output_file_path = os.path.join(
-    output_dir,
-    f'som_weights_{sample}_with_lr_{lr:.4f}_sigma_{sigma:.4f}_input_data_samples_{number_of_samples}_{topology}.p'
-)
-
-with open(output_file_path, 'wb') as outfile:
-    pickle.dump(som, outfile)
-
-print(f"SOM model saved to: {output_file_path}")
+plot_path = os.path.join(plots_dir, f"scatter_plot.png")
+plt.savefig(plot_path)
+print(f"Plot saved to {plot_path}")

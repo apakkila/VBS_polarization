@@ -6,23 +6,49 @@ import numpy as np
 ROOT.EnableImplicitMT(4)
 
 # Define the path to the data files
-data_path = "/eos/user/a/apakkila/VBS_ML_project/data"
+data_path = "/eos/user/a/apakkila/VBS_ML_project/data/processed_samples"
 
-# Define the output directory for NumPy arrays
-output_dir = "./output_numpy_arrays"
+output_dir = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays"
+#output_dir = "/eos/user/a/apakkila/VBS_ML_project/data/standard_normalized_numpy_arrays"
 os.makedirs(output_dir, exist_ok=True)
 
+# Uncomment the normalization function you want to use
+
+# # Min-Max normalization function
+# def normalize_data(data):
+#     """
+#     Normalizes the data using Min-Max scaling to [0, 1].
+
+#     Args:
+#         data (np.ndarray): Input data array.
+
+#     Returns:
+#         np.ndarray: Min-Max scaled data array.
+#     """
+#     min_val = np.min(data)
+#     max_val = np.max(data)
+#     if max_val - min_val == 0:
+#         return np.zeros_like(data)
+#     return (data - min_val) / (max_val - min_val)
+
+# StandardScaler normalization function
 def normalize_data(data):
     """
-    Normalizes the data using standard normalization (mean = 0, std = 1).
+    Standardizes the data to have zero mean and unit variance.
 
     Args:
         data (np.ndarray): Input data array.
 
     Returns:
-        np.ndarray: Normalized data array.
+        np.ndarray: Standardized data array.
     """
-    return (data - np.mean(data)) / np.std(data)
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0)
+    
+    # Avoid division by zero
+    std_replaced = np.where(std == 0, 1, std)
+    
+    return (data - mean) / std_replaced
 
 
 def process_samples(sample_list, data_path, output_dir):
@@ -41,7 +67,7 @@ def process_samples(sample_list, data_path, output_dir):
         file_path = f"{data_path}/{sample_name}.root"
 
         # Load the ROOT file into RDataFrame
-        tree = "Events"  # Replace with the actual tree name
+        tree = "Events"
         df_root = ROOT.RDataFrame(tree, file_path)
 
         # Define 4-vectors for the subjets
@@ -74,11 +100,24 @@ def process_samples(sample_list, data_path, output_dir):
         np.savez(output_file, **normalized_data)
         print(f"Saved all columns to {output_file}")
 
+#sample = "OS"
+sample = "SS"
+
+
+if sample == "OS":
 # List of sample files
-sample_list = [
-    "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
-    "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
-]
+    sample_list = [
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
+    ]
+elif sample == "SS":
+    sample_list = [
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL"
+    ]
 
 # Call the function
 process_samples(sample_list, data_path, output_dir)
