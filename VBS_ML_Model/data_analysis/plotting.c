@@ -18,19 +18,19 @@ void plotting_histograms() {
     TString eos_base = "/eos/user/a/apakkila/VBS_ML_project/data/";
 
     // Choose sign
-    TString sample_sign = "SS";
-    //TString sample_sign = "OS";
+    //TString sample_sign = "SS";
+    TString sample_sign = "OS";
 
     // Input EOS folder
     TString input_dir;
     if (sample_sign == "SS") {
-        input_dir = eos_base + "output_histograms_SS";
+        input_dir = eos_base + "output_histograms_SS_all_variables";
     } else {
-        input_dir = eos_base + "output_histograms_OS";
+        input_dir = eos_base + "output_histograms_OS_all_variables";
     }
 
     // Output EOS folder
-    TString output_dir = eos_base + "output_histograms_visualized_" + sample_sign;
+    TString output_dir = eos_base + "output_histograms_visualized_all_variables_" + sample_sign;
 
     // Create EOS output folder if it doesn't exist
     TString check_cmd = "xrdfs root://eosuser.cern.ch stat " + output_dir;
@@ -40,13 +40,22 @@ void plotting_histograms() {
         gSystem->Exec(mkdir_cmd);
     }
 
-    TString sample_names[26] = {
-        "h_V0_p_theta", "h_V0_z_j", "h_V0_pt", "h_V0_eta", "h_V0_phi", "h_V0_mass",
-        "h_V1_p_theta", "h_V1_z_j", "h_V1_pt", "h_V1_eta", "h_V1_phi", "h_V1_mass",
-        "h_VV_deta", "h_VV_dphi", "h_VV_mVV",
+    TString sample_names[53] = {
+        "h_V0_p_theta", "h_V0_z_j_leading", "h_V0_z_j_subleading", "h_V0_pt", "h_V0_eta", "h_V0_phi", "h_V0_mass", "h_V0_area",
+        "h_V1_p_theta", "h_V1_z_j_leading", "h_V1_z_j_subleading", "h_V1_pt", "h_V1_eta", "h_V1_phi", "h_V1_mass", "h_V1_area",
+
+        "h_VV_deta", "h_VV_dphi", "h_VV_mVV", "h_log_VV_mVV",
+        
         "h_TagJJ_deta", "h_TagJJ_dphi", "h_TagJJ_mJJ",
-        "h_TagJet0_eta", "h_TagJet0_pt", "h_TagJet0_phi", "h_TagJet0_mass",
-        "h_TagJet1_eta", "h_TagJet1_pt", "h_TagJet1_phi", "h_TagJet1_mass"
+        
+        "h_TagJet0_eta", "h_TagJet0_pt", "h_TagJet0_phi", "h_TagJet0_mass", "h_TagJet0_area",
+        "h_TagJet1_eta", "h_TagJet1_pt", "h_TagJet1_phi", "h_TagJet1_mass", "h_TagJet1_area",
+        
+        "h_V0_SubJet0_pt", "h_V0_SubJet1_pt", "h_V1_SubJet0_pt", "h_V1_SubJet1_pt",
+        "h_V0_SubJet0_eta", "h_V0_SubJet1_eta", "h_V1_SubJet0_eta", "h_V1_SubJet1_eta",
+        "h_V0_SubJet0_phi", "h_V0_SubJet1_phi", "h_V1_SubJet0_phi", "h_V1_SubJet1_phi",
+        "h_V0_SubJet0_mass", "h_V0_SubJet1_mass", "h_V1_SubJet0_mass", "h_V1_SubJet1_mass",
+        "h_V0_SubJet0_area", "h_V0_SubJet1_area", "h_V1_SubJet0_area", "h_V1_SubJet1_area"
     };
 
     TString polarization_states[4];
