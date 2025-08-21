@@ -28,7 +28,7 @@ if sample == "OS":
     ]
 
 elif sample == "SS":
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/feature_selection/SS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/means_and_variances/SS"
     os.makedirs(output_dir, exist_ok=True)
 
     sample_files = [
@@ -92,44 +92,27 @@ for sample_file in sample_files:
         array = data_dict[sample_file][key]
         print(f"  {key}: {len(array)}")
 
-# Ensure all requested columns are present in each file
+# Computing means and variances for each feature across all sample files
+means = {}
+variances = {}
+
 for sample_file in sample_files:
-    missing = [col for col in columns_to_extract if col not in data_dict[sample_file]]
-    if missing:
-        raise KeyError(f"Missing columns in {sample_file}: {missing}")
+    print(f"Processing sample: {sample_file}")
+    for key in data_dict[sample_file]:
+        if key in columns_to_extract:
+            array = data_dict[sample_file][key]
+            if key not in means:
+                means[key] = []
+                variances[key] = []
+            means[key].append(np.mean(array))
+            variances[key].append(np.var(array))
 
-# Extract only the specified columns
-training_data = np.concatenate([
-    np.column_stack([data_dict[sample_file][key][:] for key in columns_to_extract])
-    for sample_file in sample_files
-])
+# Convert means and variances to DataFrames for better visualization
+means_df = pd.DataFrame(means)
+variances_df = pd.DataFrame(variances)
 
-# Construct the target array based on the number of rows in each sample file
-target = np.concatenate([
-    np.array(['LL'] * len(data_dict[sample_files[0]][columns_to_extract[0]])),
-    np.array(['LTTL'] * len(data_dict[sample_files[1]][columns_to_extract[0]])),
-    np.array(['TT'] * len(data_dict[sample_files[2]][columns_to_extract[0]]))
-])
-
-# Convert target to a DataFrame
-target = pd.DataFrame(target, columns=["label"])
-
-from sklearn.preprocessing import LabelEncoder
-
-# Encode target labels
-label_encoder = LabelEncoder()
-target_encoded = label_encoder.fit_transform(target.values.ravel())
-
-data = pd.DataFrame(training_data, columns=columns_to_extract)
-
-# Feature selection
-
-from sklearn.tree import DecisionTreeRegressor
-model = DecisionTreeRegressor(random_state=0)
-model.fit(data, target_encoded)
-print(model.feature_importances_) #use inbuilt class feature_importances of tree based classifiers
-# #plot graph of feature importances for better visualization
-feat_importances = pd.Series(model.feature_importances_, index=data.columns)
-feat_importances.nlargest(data.shape[1]).plot(kind='barh')
-plt.savefig(os.path.join(output_dir, 'feature_importances.png'))
-plt.close()
+# Save means and variances to CSV files
+means_file = os.path.join(output_dir, "means.csv")
+variances_file = os.path.join(output_dir, "variances.csv")
+means_df.to_csv(means_file, index=False)
+variances_df.to_csv(variances_file, index=False)

@@ -8,34 +8,32 @@ import dcor
 sample = "SS"
 # sample = "OS"
 
-numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays"
+numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
 if sample == "OS":
-    output_dir_within_sample = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/OS/distance_correlations"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/OS/distance_correlations"
     sample_files = [
-        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz"
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
 else:
-    output_dir_within_sample = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/SS/distance_correlations"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/SS/distance_correlations"
     sample_files = [
-        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz"
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1pPOL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
 
-os.makedirs(output_dir_within_sample, exist_ok=True)
+os.makedirs(output_dir, exist_ok=True)
 
 columns_to_extract = [
-    "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", "V0_pt",
-    "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading", "V1_pt",
-    "VV_deta", "VV_dphi", "log_VV_mVV",
-    "TagJJ_deta", "TagJJ_dphi", "TagJJ_mJJ",
-    "TagJet0_eta", "TagJet0_pt", "TagJet0_mass",
-    "TagJet1_eta", "TagJet1_pt", "TagJet1_mass",
-    "V0_SubJet0_pt", "V0_SubJet1_pt", "V1_SubJet0_pt", "V1_SubJet1_pt",
-    "V0_SubJet0_mass", "V0_SubJet1_mass", "V1_SubJet0_mass", "V1_SubJet1_mass",
+            "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
+            "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+
+            "VV_deta", "VV_dphi", "VV_mVV", 
+            
+            "TagJJ_deta", "TagJJ_dphi", "TagJJ_mJJ",
 ]
 
 # Loop over individual files
@@ -69,7 +67,7 @@ for fname in sample_files:
     short_name = os.path.splitext(fname)[0]
 
     # Save CSV
-    csv_path = os.path.join(output_dir_within_sample, f"{short_name}_dcor_matrix.csv")
+    csv_path = os.path.join(output_dir, f"{short_name}_dcor_matrix.csv")
     dcor_df.to_csv(csv_path)
     print(f"Saved matrix to: {csv_path}")
 
@@ -82,7 +80,7 @@ for fname in sample_files:
     plt.title(f"Distance Correlation Matrix\n{short_name}", fontsize=14)
     plt.tight_layout()
 
-    heatmap_path = os.path.join(output_dir_within_sample, f"{short_name}_dcor_heatmap.png")
+    heatmap_path = os.path.join(output_dir, f"{short_name}_dcor_heatmap_less_variables.png")
     plt.savefig(heatmap_path, dpi=300)
     plt.close()
     print(f"Saved heatmap to: {heatmap_path}")
