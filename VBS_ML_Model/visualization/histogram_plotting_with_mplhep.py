@@ -18,7 +18,7 @@ class HistogramEntry:
             self.values = self.values / total
 
 def plotting_histograms():
-    eos_base = "/eos/user/a/apakkila/VBS_ML_project/data/"
+    eos_base = "/eos/user/a/apakkila/VBS_ML_project/data/with_PF_candidates/"
     
     sample_sign = "SS"
     #sample_sign = "OS"
@@ -28,7 +28,7 @@ def plotting_histograms():
     else:
         input_dir = eos_base + "output_histograms_OS_all_variables_with_PF_candidates"
     
-    output_dir = f"/eos/user/a/apakkila/VBS_ML_project/histograms/output_histograms_visualized_all_variables_{sample_sign}"
+    output_dir = f"/eos/user/a/apakkila/VBS_ML_project/histograms/with_PF_candidates/output_histograms_visualized_all_variables_{sample_sign}"
     
     check_cmd = f"xrdfs root://eosuser.cern.ch stat {output_dir}"
     result = subprocess.run(check_cmd, shell=True, capture_output=True)
@@ -48,7 +48,9 @@ def plotting_histograms():
         "h_V0_SubJet0_eta", "h_V0_SubJet1_eta", "h_V1_SubJet0_eta", "h_V1_SubJet1_eta",
         "h_V0_SubJet0_phi", "h_V0_SubJet1_phi", "h_V1_SubJet0_phi", "h_V1_SubJet1_phi",
         "h_V0_SubJet0_mass", "h_V0_SubJet1_mass", "h_V1_SubJet0_mass", "h_V1_SubJet1_mass",
-        "h_V0_SubJet0_area", "h_V0_SubJet1_area", "h_V1_SubJet0_area", "h_V1_SubJet1_area"
+        "h_V0_SubJet0_area", "h_V0_SubJet1_area", "h_V1_SubJet0_area", "h_V1_SubJet1_area",
+        "h_V0_PFCand10_jetaxisDeta", "h_V0_PFCand10_jetaxisDphi", "h_V0_PFCand10_logPt", "h_V0_PFCand10_logE", "h_V0_PFCand10_logPtOverV0", "h_V0_PFCand10_logEOverV0", "h_V0_PFCand10_deltaR",
+        "h_V0_PFCandAll_jetaxisDeta", "h_V0_PFCandAll_jetaxisDphi", "h_V0_PFCandAll_logPt", "h_V0_PFCandAll_logE", "h_V0_PFCandAll_logPtOverV0", "h_V0_PFCandAll_logEOverV0", "h_V0_PFCandAll_deltaR",
     ]
 
     y_axis_names = [
@@ -62,7 +64,9 @@ def plotting_histograms():
         r"$\eta$", r"$\eta$", r"$\eta$", r"$\eta$",
         r"$\phi$", r"$\phi$", r"$\phi$", r"$\phi$",
         r"$m$", r"$m$", r"$m$", r"$m$",
-        r"$\mathrm{area}$", r"$\mathrm{area}$", r"$\mathrm{area}$", r"$\mathrm{area}$"
+        r"$\mathrm{area}$", r"$\mathrm{area}$", r"$\mathrm{area}$", r"$\mathrm{area}$",
+        "h_V0_PFCand10_jetaxisDeta", "h_V0_PFCand10_jetaxisDphi", "h_V0_PFCand10_logPt", "h_V0_PFCand10_logE", "h_V0_PFCand10_logPtOverV0", "h_V0_PFCand10_logEOverV0", "h_V0_PFCand10_deltaR",
+        "h_V0_PFCandAll_jetaxisDeta", "h_V0_PFCandAll_jetaxisDphi", "h_V0_PFCandAll_logPt", "h_V0_PFCandAll_logE", "h_V0_PFCandAll_logPtOverV0", "h_V0_PFCandAll_logEOverV0", "h_V0_PFCandAll_deltaR",
     ]
 
     title_names = [
@@ -76,7 +80,9 @@ def plotting_histograms():
         r"$\eta$ of SubJet0 of V0", r"$\eta$ of SubJet1 of V0", r"$\eta$ of SubJet0 of V1", r"$\eta$ of SubJet1 of V1",
         r"$\phi$ of SubJet0 of V0", r"$\phi$ of SubJet1 of V0", r"$\phi$ of SubJet0 of V1", r"$\phi$ of SubJet1 of V1",
         r"$m$ of SubJet0 of V0", r"$m$ of SubJet1 of V0", r"$m$ of SubJet0 of V1", r"$m$ of SubJet1 of V1",
-        r"$\mathrm{area}$ of SubJet0 of V0", r"$\mathrm{area}$ of SubJet1 of V0", r"$\mathrm{area}$ of SubJet0 of V1", r"$\mathrm{area}$ of SubJet1 of V1"
+        r"$\mathrm{area}$ of SubJet0 of V0", r"$\mathrm{area}$ of SubJet1 of V0", r"$\mathrm{area}$ of SubJet0 of V1", r"$\mathrm{area}$ of SubJet1 of V1",
+        "h_V0_PFCand10_jetaxisDeta", "h_V0_PFCand10_jetaxisDphi", "h_V0_PFCand10_logPt", "h_V0_PFCand10_logE", "h_V0_PFCand10_logPtOverV0", "h_V0_PFCand10_logEOverV0", "h_V0_PFCand10_deltaR",
+        "h_V0_PFCandAll_jetaxisDeta", "h_V0_PFCandAll_jetaxisDphi", "h_V0_PFCandAll_logPt", "h_V0_PFCandAll_logE", "h_V0_PFCandAll_logPtOverV0", "h_V0_PFCandAll_logEOverV0", "h_V0_PFCandAll_deltaR",
     ]
 
     if sample_sign == "SS":

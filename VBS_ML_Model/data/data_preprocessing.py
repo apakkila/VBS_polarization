@@ -9,7 +9,7 @@ ROOT.EnableImplicitMT(4)
 data_path = "/eos/user/a/apakkila/VBS_ML_project/data/processed_samples_with_PF_candidates"
 
 output_dir = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
-#output_dir = "/eos/user/a/apakkila/VBS_ML_project/data/standard_normalized_numpy_arrays"
+
 os.makedirs(output_dir, exist_ok=True)
 
 # Uncomment the normalization function you want to use
@@ -149,48 +149,48 @@ def process_samples(sample_list, data_path, output_dir):
 
         # Convert specific columns to NumPy arrays
         columns_to_extract = [
-            "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", "V0_pt", "V0_eta", "V0_phi", "V0_mass", "V0_area",
-            "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading", "V1_pt", "V1_eta", "V1_phi", "V1_mass", "V1_area",
+            "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", #"V0_pt", "V0_eta", "V0_phi", "V0_mass", "V0_area",
+            "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading", #"V1_pt", "V1_eta", "V1_phi", "V1_mass", "V1_area",
 
             "VV_deta", "VV_dphi", "VV_mVV", "log_VV_mVV",
 
             "TagJJ_deta", "TagJJ_dphi", "TagJJ_mJJ", "log_TagJJ_mJJ",
 
-            "TagJet0_eta", "TagJet0_pt", "TagJet0_phi", "TagJet0_mass", "TagJet0_area",
-            "TagJet1_eta", "TagJet1_pt", "TagJet1_phi", "TagJet1_mass", "TagJet1_area",
-            "log_TagJet0_mass", "log_TagJet1_mass", "log_TagJet0_pt", "log_TagJet1_pt",
+            # "TagJet0_eta", "TagJet0_pt", "TagJet0_phi", "TagJet0_mass", "TagJet0_area",
+            # "TagJet1_eta", "TagJet1_pt", "TagJet1_phi", "TagJet1_mass", "TagJet1_area",
+            # "log_TagJet0_mass", "log_TagJet1_mass", "log_TagJet0_pt", "log_TagJet1_pt",
 
-            "V0_SubJet0_pt", "V0_SubJet1_pt", "V1_SubJet0_pt", "V1_SubJet1_pt",
-            "V0_SubJet0_eta", "V0_SubJet1_eta", "V1_SubJet0_eta", "V1_SubJet1_eta",
-            "V0_SubJet0_phi", "V0_SubJet1_phi", "V1_SubJet0_phi", "V1_SubJet1_phi",
-            "V0_SubJet0_mass", "V0_SubJet1_mass", "V1_SubJet0_mass", "V1_SubJet1_mass",
-            "V0_SubJet0_area", "V0_SubJet1_area", "V1_SubJet0_area", "V1_SubJet1_area",
-            "V0_z_j_leading_mirrored", "V0_z_j_subleading_mirrored",
-            "V1_z_j_leading_mirrored", "V1_z_j_subleading_mirrored",
-            "VV_dphi_mirrored", "TagJJ_deta_mirrored",
+            # "V0_SubJet0_pt", "V0_SubJet1_pt", "V1_SubJet0_pt", "V1_SubJet1_pt",
+            # "V0_SubJet0_eta", "V0_SubJet1_eta", "V1_SubJet0_eta", "V1_SubJet1_eta",
+            # "V0_SubJet0_phi", "V0_SubJet1_phi", "V1_SubJet0_phi", "V1_SubJet1_phi",
+            # "V0_SubJet0_mass", "V0_SubJet1_mass", "V1_SubJet0_mass", "V1_SubJet1_mass",
+            # "V0_SubJet0_area", "V0_SubJet1_area", "V1_SubJet0_area", "V1_SubJet1_area",
+            # "V0_z_j_leading_mirrored", "V0_z_j_subleading_mirrored",
+            # "V1_z_j_leading_mirrored", "V1_z_j_subleading_mirrored",
+            # "VV_dphi_mirrored", "TagJJ_deta_mirrored",
 
-            # "V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDphi", "V0_PFCand10_logPt", "V0_PFCand10_logE", "V0_PFCand10_logPtOverV0", "V0_PFCand10_logEOverV0", "V0_PFCand10_deltaR",
-            # "V0_PFCand11_jetaxisDeta", "V0_PFCand11_jetaxisDphi", "V0_PFCand11_logPt", "V0_PFCand11_logE", "V0_PFCand11_logPtOverV0", "V0_PFCand11_logEOverV0", "V0_PFCand11_deltaR",
-            # "V0_PFCand12_jetaxisDeta", "V0_PFCand12_jetaxisDphi", "V0_PFCand12_logPt", "V0_PFCand12_logE", "V0_PFCand12_logPtOverV0", "V0_PFCand12_logEOverV0", "V0_PFCand12_deltaR",
-            # "V0_PFCand13_jetaxisDeta", "V0_PFCand13_jetaxisDphi", "V0_PFCand13_logPt", "V0_PFCand13_logE", "V0_PFCand13_logPtOverV0", "V0_PFCand13_logEOverV0", "V0_PFCand13_deltaR",
-            # "V0_PFCand14_jetaxisDeta", "V0_PFCand14_jetaxisDphi", "V0_PFCand14_logPt", "V0_PFCand14_logE", "V0_PFCand14_logPtOverV0", "V0_PFCand14_logEOverV0", "V0_PFCand14_deltaR",
-            # "V0_PFCand15_jetaxisDeta", "V0_PFCand15_jetaxisDphi", "V0_PFCand15_logPt", "V0_PFCand15_logE", "V0_PFCand15_logPtOverV0", "V0_PFCand15_logEOverV0", "V0_PFCand15_deltaR",
-            # "V0_PFCand16_jetaxisDeta", "V0_PFCand16_jetaxisDphi", "V0_PFCand16_logPt", "V0_PFCand16_logE", "V0_PFCand16_logPtOverV0", "V0_PFCand16_logEOverV0", "V0_PFCand16_deltaR",
-            # "V0_PFCand17_jetaxisDeta", "V0_PFCand17_jetaxisDphi", "V0_PFCand17_logPt", "V0_PFCand17_logE", "V0_PFCand17_logPtOverV0", "V0_PFCand17_logEOverV0", "V0_PFCand17_deltaR",
-            # "V0_PFCand18_jetaxisDeta", "V0_PFCand18_jetaxisDphi", "V0_PFCand18_logPt", "V0_PFCand18_logE", "V0_PFCand18_logPtOverV0", "V0_PFCand18_logEOverV0", "V0_PFCand18_deltaR",
-            # "V0_PFCand19_jetaxisDeta", "V0_PFCand19_jetaxisDphi", "V0_PFCand19_logPt", "V0_PFCand19_logE", "V0_PFCand19_logPtOverV0", "V0_PFCand19_logEOverV0", "V0_PFCand19_deltaR",
+            "V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDphi", "V0_PFCand10_logPt", "V0_PFCand10_logE", "V0_PFCand10_logPtOverV0", "V0_PFCand10_logEOverV0", "V0_PFCand10_deltaR",
+            "V0_PFCand11_jetaxisDeta", "V0_PFCand11_jetaxisDphi", "V0_PFCand11_logPt", "V0_PFCand11_logE", "V0_PFCand11_logPtOverV0", "V0_PFCand11_logEOverV0", "V0_PFCand11_deltaR",
+            "V0_PFCand12_jetaxisDeta", "V0_PFCand12_jetaxisDphi", "V0_PFCand12_logPt", "V0_PFCand12_logE", "V0_PFCand12_logPtOverV0", "V0_PFCand12_logEOverV0", "V0_PFCand12_deltaR",
+            "V0_PFCand13_jetaxisDeta", "V0_PFCand13_jetaxisDphi", "V0_PFCand13_logPt", "V0_PFCand13_logE", "V0_PFCand13_logPtOverV0", "V0_PFCand13_logEOverV0", "V0_PFCand13_deltaR",
+            "V0_PFCand14_jetaxisDeta", "V0_PFCand14_jetaxisDphi", "V0_PFCand14_logPt", "V0_PFCand14_logE", "V0_PFCand14_logPtOverV0", "V0_PFCand14_logEOverV0", "V0_PFCand14_deltaR",
+            "V0_PFCand15_jetaxisDeta", "V0_PFCand15_jetaxisDphi", "V0_PFCand15_logPt", "V0_PFCand15_logE", "V0_PFCand15_logPtOverV0", "V0_PFCand15_logEOverV0", "V0_PFCand15_deltaR",
+            "V0_PFCand16_jetaxisDeta", "V0_PFCand16_jetaxisDphi", "V0_PFCand16_logPt", "V0_PFCand16_logE", "V0_PFCand16_logPtOverV0", "V0_PFCand16_logEOverV0", "V0_PFCand16_deltaR",
+            "V0_PFCand17_jetaxisDeta", "V0_PFCand17_jetaxisDphi", "V0_PFCand17_logPt", "V0_PFCand17_logE", "V0_PFCand17_logPtOverV0", "V0_PFCand17_logEOverV0", "V0_PFCand17_deltaR",
+            "V0_PFCand18_jetaxisDeta", "V0_PFCand18_jetaxisDphi", "V0_PFCand18_logPt", "V0_PFCand18_logE", "V0_PFCand18_logPtOverV0", "V0_PFCand18_logEOverV0", "V0_PFCand18_deltaR",
+            "V0_PFCand19_jetaxisDeta", "V0_PFCand19_jetaxisDphi", "V0_PFCand19_logPt", "V0_PFCand19_logE", "V0_PFCand19_logPtOverV0", "V0_PFCand19_logEOverV0", "V0_PFCand19_deltaR",
 
 
-            # "V1_PFCand10_jetaxisDeta", "V1_PFCand10_jetaxisDphi", "V1_PFCand10_logPt", "V1_PFCand10_logE", "V1_PFCand10_logPtOverV1", "V1_PFCand10_logEOverV1", "V1_PFCand10_deltaR",
-            # "V1_PFCand11_jetaxisDeta", "V1_PFCand11_jetaxisDphi", "V1_PFCand11_logPt", "V1_PFCand11_logE", "V1_PFCand11_logPtOverV1", "V1_PFCand11_logEOverV1", "V1_PFCand11_deltaR",
-            # "V1_PFCand12_jetaxisDeta", "V1_PFCand12_jetaxisDphi", "V1_PFCand12_logPt", "V1_PFCand12_logE", "V1_PFCand12_logPtOverV1", "V1_PFCand12_logEOverV1", "V1_PFCand12_deltaR",
-            # "V1_PFCand13_jetaxisDeta", "V1_PFCand13_jetaxisDphi", "V1_PFCand13_logPt", "V1_PFCand13_logE", "V1_PFCand13_logPtOverV1", "V1_PFCand13_logEOverV1", "V1_PFCand13_deltaR",
-            # "V1_PFCand14_jetaxisDeta", "V1_PFCand14_jetaxisDphi", "V1_PFCand14_logPt", "V1_PFCand14_logE", "V1_PFCand14_logPtOverV1", "V1_PFCand14_logEOverV1", "V1_PFCand14_deltaR",
-            # "V1_PFCand15_jetaxisDeta", "V1_PFCand15_jetaxisDphi", "V1_PFCand15_logPt", "V1_PFCand15_logE", "V1_PFCand15_logPtOverV1", "V1_PFCand15_logEOverV1", "V1_PFCand15_deltaR",
-            # "V1_PFCand16_jetaxisDeta", "V1_PFCand16_jetaxisDphi", "V1_PFCand16_logPt", "V1_PFCand16_logE", "V1_PFCand16_logPtOverV1", "V1_PFCand16_logEOverV1", "V1_PFCand16_deltaR",
-            # "V1_PFCand17_jetaxisDeta", "V1_PFCand17_jetaxisDphi", "V1_PFCand17_logPt", "V1_PFCand17_logE", "V1_PFCand17_logPtOverV1", "V1_PFCand17_logEOverV1", "V1_PFCand17_deltaR",
-            # "V1_PFCand18_jetaxisDeta", "V1_PFCand18_jetaxisDphi", "V1_PFCand18_logPt", "V1_PFCand18_logE", "V1_PFCand18_logPtOverV1", "V1_PFCand18_logEOverV1", "V1_PFCand18_deltaR",
-            # "V1_PFCand19_jetaxisDeta", "V1_PFCand19_jetaxisDphi", "V1_PFCand19_logPt", "V1_PFCand19_logE", "V1_PFCand19_logPtOverV1", "V1_PFCand19_logEOverV1", "V1_PFCand19_deltaR",
+            "V1_PFCand10_jetaxisDeta", "V1_PFCand10_jetaxisDphi", "V1_PFCand10_logPt", "V1_PFCand10_logE", "V1_PFCand10_logPtOverV1", "V1_PFCand10_logEOverV1", "V1_PFCand10_deltaR",
+            "V1_PFCand11_jetaxisDeta", "V1_PFCand11_jetaxisDphi", "V1_PFCand11_logPt", "V1_PFCand11_logE", "V1_PFCand11_logPtOverV1", "V1_PFCand11_logEOverV1", "V1_PFCand11_deltaR",
+            "V1_PFCand12_jetaxisDeta", "V1_PFCand12_jetaxisDphi", "V1_PFCand12_logPt", "V1_PFCand12_logE", "V1_PFCand12_logPtOverV1", "V1_PFCand12_logEOverV1", "V1_PFCand12_deltaR",
+            "V1_PFCand13_jetaxisDeta", "V1_PFCand13_jetaxisDphi", "V1_PFCand13_logPt", "V1_PFCand13_logE", "V1_PFCand13_logPtOverV1", "V1_PFCand13_logEOverV1", "V1_PFCand13_deltaR",
+            "V1_PFCand14_jetaxisDeta", "V1_PFCand14_jetaxisDphi", "V1_PFCand14_logPt", "V1_PFCand14_logE", "V1_PFCand14_logPtOverV1", "V1_PFCand14_logEOverV1", "V1_PFCand14_deltaR",
+            "V1_PFCand15_jetaxisDeta", "V1_PFCand15_jetaxisDphi", "V1_PFCand15_logPt", "V1_PFCand15_logE", "V1_PFCand15_logPtOverV1", "V1_PFCand15_logEOverV1", "V1_PFCand15_deltaR",
+            "V1_PFCand16_jetaxisDeta", "V1_PFCand16_jetaxisDphi", "V1_PFCand16_logPt", "V1_PFCand16_logE", "V1_PFCand16_logPtOverV1", "V1_PFCand16_logEOverV1", "V1_PFCand16_deltaR",
+            "V1_PFCand17_jetaxisDeta", "V1_PFCand17_jetaxisDphi", "V1_PFCand17_logPt", "V1_PFCand17_logE", "V1_PFCand17_logPtOverV1", "V1_PFCand17_logEOverV1", "V1_PFCand17_deltaR",
+            "V1_PFCand18_jetaxisDeta", "V1_PFCand18_jetaxisDphi", "V1_PFCand18_logPt", "V1_PFCand18_logE", "V1_PFCand18_logPtOverV1", "V1_PFCand18_logEOverV1", "V1_PFCand18_deltaR",
+            "V1_PFCand19_jetaxisDeta", "V1_PFCand19_jetaxisDphi", "V1_PFCand19_logPt", "V1_PFCand19_logE", "V1_PFCand19_logPtOverV1", "V1_PFCand19_logEOverV1", "V1_PFCand19_deltaR",
         ]
 
 
@@ -198,62 +198,61 @@ def process_samples(sample_list, data_path, output_dir):
         numpy_data = df_root.AsNumpy(columns_to_extract)
 
 
-        # from collections import defaultdict
-        # import numpy as np
+        from collections import defaultdict
+        import numpy as np
 
-        # # Group vector features based on prefix (e.g. V0_PFCand10)
-        # def extract_vector_groups(numpy_data):
-        #     grouped = defaultdict(list)
-        #     for name in numpy_data.keys():
-        #         prefix = "_".join(name.split("_")[:3])
-        #         grouped[prefix].append(name)
-        #     return grouped
+        # Group vector features based on prefix (e.g. V0_PFCand10)
+        def extract_vector_groups(numpy_data):
+            grouped = defaultdict(list)
+            for name in numpy_data.keys():
+                prefix = "_".join(name.split("_")[:3])
+                grouped[prefix].append(name)
+            return grouped
 
-        # vector_groups = extract_vector_groups(numpy_data)
-        # n_events = next(iter(numpy_data.values())).shape[0]
+        vector_groups = extract_vector_groups(numpy_data)
+        n_events = next(iter(numpy_data.values())).shape[0]
 
-        # # Initialize keep mask to all True
-        # keep_mask = np.ones(n_events, dtype=bool)
+        # Initialize keep mask to all True
+        keep_mask = np.ones(n_events, dtype=bool)
 
-        # # Track removal reasons
-        # removed_due_to_neg999 = np.zeros(n_events, dtype=bool)
-        # removed_due_to_inf    = np.zeros(n_events, dtype=bool)
-        # removed_due_to_nan    = np.zeros(n_events, dtype=bool)
+        # Track removal reasons
+        removed_due_to_neg999 = np.zeros(n_events, dtype=bool)
+        removed_due_to_inf    = np.zeros(n_events, dtype=bool)
+        removed_due_to_nan    = np.zeros(n_events, dtype=bool)
 
-        # # Step 1: Check vector groups
-        # for group_columns in vector_groups.values():
-        #     group_data = np.stack([numpy_data[col] for col in group_columns], axis=1)
+        # Step 1: Check vector groups
+        for group_columns in vector_groups.values():
+            group_data = np.stack([numpy_data[col] for col in group_columns], axis=1)
 
-        #     removed_due_to_neg999 |= np.any(group_data == -999, axis=1)
-        #     removed_due_to_inf    |= np.any(~np.isfinite(group_data), axis=1)  # catches +inf, -inf
-        #     removed_due_to_nan    |= np.any(np.isnan(group_data), axis=1)
+            removed_due_to_neg999 |= np.any(group_data == -999, axis=1)
+            removed_due_to_inf    |= np.any(~np.isfinite(group_data), axis=1)  # catches +inf, -inf
+            removed_due_to_nan    |= np.any(np.isnan(group_data), axis=1)
 
-        # # Step 2: Check all scalar columns (not part of vector groups)
-        # scalar_columns = set(numpy_data.keys()) - {col for group in vector_groups.values() for col in group}
+        # Step 2: Check all scalar columns (not part of vector groups)
+        scalar_columns = set(numpy_data.keys()) - {col for group in vector_groups.values() for col in group}
 
-        # for col in scalar_columns:
-        #     array = numpy_data[col]
-        #     removed_due_to_neg999 |= (array == -999)
-        #     removed_due_to_inf    |= ~np.isfinite(array)
-        #     removed_due_to_nan    |= np.isnan(array)
+        for col in scalar_columns:
+            array = numpy_data[col]
+            removed_due_to_neg999 |= (array == -999)
+            removed_due_to_inf    |= ~np.isfinite(array)
+            removed_due_to_nan    |= np.isnan(array)
 
-        # # Final mask: only keep events clean in all respects
-        # keep_mask &= ~(removed_due_to_neg999 | removed_due_to_inf | removed_due_to_nan)
+        # Final mask: only keep events clean in all respects
+        keep_mask &= ~(removed_due_to_neg999 | removed_due_to_inf | removed_due_to_nan)
 
-        # # Apply mask to data
-        # for key in numpy_data:
-        #     numpy_data[key] = numpy_data[key][keep_mask]
+        # Apply mask to data
+        for key in numpy_data:
+            numpy_data[key] = numpy_data[key][keep_mask]
 
-        # # Print summary
-        # print(f"Total events:                        {n_events}")
-        # print(f"Removed due to -999:                 {np.sum(removed_due_to_neg999)}")
-        # print(f"Removed due to inf or -inf:          {np.sum(removed_due_to_inf)}")
-        # print(f"Removed due to NaN:                  {np.sum(removed_due_to_nan)}")
-        # print(f"Remaining after full cleaning:       {np.sum(keep_mask)}")
+        # Print summary
+        print(f"Total events:                        {n_events}")
+        print(f"Removed due to -999:                 {np.sum(removed_due_to_neg999)}")
+        print(f"Removed due to inf or -inf:          {np.sum(removed_due_to_inf)}")
+        print(f"Removed due to NaN:                  {np.sum(removed_due_to_nan)}")
+        print(f"Remaining after full cleaning:       {np.sum(keep_mask)}")
 
 
         # Normalize each column
-        #normalized_data = {column_name: normalize_data(array) for column_name, array in numpy_data.items()}
         normalized_data = {column_name: normalize_data(array) for column_name, array in numpy_data.items()}
 
         # Save all columns into a single NumPy file
@@ -263,8 +262,8 @@ def process_samples(sample_list, data_path, output_dir):
 
 
 # Choose which sample will be processed
-sample = "OS"
-#sample = "SS"
+#sample = "OS"
+sample = "SS"
 
 if sample == "OS":
 # List of sample files

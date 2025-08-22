@@ -36,17 +36,18 @@ class ChebyshevSOM(MiniSom):
 
 # Directory containing the input numpy arrays
 #numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/unnormalized_numpy_arrays_with_PF_candidates/with_mirrored_variables"
+# numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
 numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
 
 #sample = "OS"
 sample = "SS"
-polarization_fraction_biased = True
+polarization_fraction_biased = False
 
 
 if sample == "OS":
     # Directory to save the trained SOM model weights
     cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/som/final_plots/guassian_euclidean/regular_variables/parameter_search/OS"
-    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/polarization_fraction_biased/OS"
+    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/parameter_search/OS"
     
     os.makedirs(cluster_plots_dir, exist_ok=True)
     os.makedirs(feature_importance_plots_dir, exist_ok=True)
@@ -60,13 +61,13 @@ if sample == "OS":
         "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
 elif sample == "SS":
-    cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/som/final_plots/guassian_euclidean/regular_variables/polarization_fraction_biased/SS"
-    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/polarization_fraction_biased/SS"
+    cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/som/final_plots/guassian_euclidean/regular_variables/with_PF_candidates/SS"
+    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/with_PF_candidates/SS"
 
     os.makedirs(cluster_plots_dir, exist_ok=True)
     os.makedirs(feature_importance_plots_dir, exist_ok=True)
 
-    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/polarization_fraction_biased/SS"
+    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/with_PF_candidates/SS"
 
     sample_files = [
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
@@ -95,41 +96,43 @@ data_dict = {}
 
 ## Columns including the first 20 PF candidates
 
-# columns_to_extract = [
-#     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
-#     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+columns_to_extract = [
+    "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
+    "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
 
 #     #"V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
-#     "VV_deta", "VV_mVV", "VV_dphi",
+    "VV_deta", "VV_dphi", "log_VV_mVV",
 
 #     #"VV_dphi_mirrored",  
     
-#     "TagJJ_dphi", "TagJJ_mJJ", "TagJJ_deta", 
+    "TagJJ_deta", 
+    
+#     "TagJJ_dphi", "TagJJ_mJJ",
 
-#     "V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDphi", "V0_PFCand10_logPt", "V0_PFCand10_logE", "V0_PFCand10_logPtOverV0", "V0_PFCand10_logEOverV0", "V0_PFCand10_deltaR",
-#     "V0_PFCand11_jetaxisDeta", "V0_PFCand11_jetaxisDphi", "V0_PFCand11_logPt", "V0_PFCand11_logE", "V0_PFCand11_logPtOverV0", "V0_PFCand11_logEOverV0", "V0_PFCand11_deltaR",
-#     "V0_PFCand12_jetaxisDeta", "V0_PFCand12_jetaxisDphi", "V0_PFCand12_logPt", "V0_PFCand12_logE", "V0_PFCand12_logPtOverV0", "V0_PFCand12_logEOverV0", "V0_PFCand12_deltaR",
-#     "V0_PFCand13_jetaxisDeta", "V0_PFCand13_jetaxisDphi", "V0_PFCand13_logPt", "V0_PFCand13_logE", "V0_PFCand13_logPtOverV0", "V0_PFCand13_logEOverV0", "V0_PFCand13_deltaR",
-#     "V0_PFCand14_jetaxisDeta", "V0_PFCand14_jetaxisDphi", "V0_PFCand14_logPt", "V0_PFCand14_logE", "V0_PFCand14_logPtOverV0", "V0_PFCand14_logEOverV0", "V0_PFCand14_deltaR",
-#     "V0_PFCand15_jetaxisDeta", "V0_PFCand15_jetaxisDphi", "V0_PFCand15_logPt", "V0_PFCand15_logE", "V0_PFCand15_logPtOverV0", "V0_PFCand15_logEOverV0", "V0_PFCand15_deltaR",
-#     "V0_PFCand16_jetaxisDeta", "V0_PFCand16_jetaxisDphi", "V0_PFCand16_logPt", "V0_PFCand16_logE", "V0_PFCand16_logPtOverV0", "V0_PFCand16_logEOverV0", "V0_PFCand16_deltaR",
-#     "V0_PFCand17_jetaxisDeta", "V0_PFCand17_jetaxisDphi", "V0_PFCand17_logPt", "V0_PFCand17_logE", "V0_PFCand17_logPtOverV0", "V0_PFCand17_logEOverV0", "V0_PFCand17_deltaR",
-#     "V0_PFCand18_jetaxisDeta", "V0_PFCand18_jetaxisDphi", "V0_PFCand18_logPt", "V0_PFCand18_logE", "V0_PFCand18_logPtOverV0", "V0_PFCand18_logEOverV0", "V0_PFCand18_deltaR",
-#     "V0_PFCand19_jetaxisDeta", "V0_PFCand19_jetaxisDphi", "V0_PFCand19_logPt", "V0_PFCand19_logE", "V0_PFCand19_logPtOverV0", "V0_PFCand19_logEOverV0", "V0_PFCand19_deltaR",
+    "V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDphi", "V0_PFCand10_logPt", "V0_PFCand10_logE", "V0_PFCand10_logPtOverV0", "V0_PFCand10_logEOverV0", "V0_PFCand10_deltaR",
+    "V0_PFCand11_jetaxisDeta", "V0_PFCand11_jetaxisDphi", "V0_PFCand11_logPt", "V0_PFCand11_logE", "V0_PFCand11_logPtOverV0", "V0_PFCand11_logEOverV0", "V0_PFCand11_deltaR",
+    "V0_PFCand12_jetaxisDeta", "V0_PFCand12_jetaxisDphi", "V0_PFCand12_logPt", "V0_PFCand12_logE", "V0_PFCand12_logPtOverV0", "V0_PFCand12_logEOverV0", "V0_PFCand12_deltaR",
+    "V0_PFCand13_jetaxisDeta", "V0_PFCand13_jetaxisDphi", "V0_PFCand13_logPt", "V0_PFCand13_logE", "V0_PFCand13_logPtOverV0", "V0_PFCand13_logEOverV0", "V0_PFCand13_deltaR",
+    "V0_PFCand14_jetaxisDeta", "V0_PFCand14_jetaxisDphi", "V0_PFCand14_logPt", "V0_PFCand14_logE", "V0_PFCand14_logPtOverV0", "V0_PFCand14_logEOverV0", "V0_PFCand14_deltaR",
+    "V0_PFCand15_jetaxisDeta", "V0_PFCand15_jetaxisDphi", "V0_PFCand15_logPt", "V0_PFCand15_logE", "V0_PFCand15_logPtOverV0", "V0_PFCand15_logEOverV0", "V0_PFCand15_deltaR",
+    "V0_PFCand16_jetaxisDeta", "V0_PFCand16_jetaxisDphi", "V0_PFCand16_logPt", "V0_PFCand16_logE", "V0_PFCand16_logPtOverV0", "V0_PFCand16_logEOverV0", "V0_PFCand16_deltaR",
+    "V0_PFCand17_jetaxisDeta", "V0_PFCand17_jetaxisDphi", "V0_PFCand17_logPt", "V0_PFCand17_logE", "V0_PFCand17_logPtOverV0", "V0_PFCand17_logEOverV0", "V0_PFCand17_deltaR",
+    "V0_PFCand18_jetaxisDeta", "V0_PFCand18_jetaxisDphi", "V0_PFCand18_logPt", "V0_PFCand18_logE", "V0_PFCand18_logPtOverV0", "V0_PFCand18_logEOverV0", "V0_PFCand18_deltaR",
+    "V0_PFCand19_jetaxisDeta", "V0_PFCand19_jetaxisDphi", "V0_PFCand19_logPt", "V0_PFCand19_logE", "V0_PFCand19_logPtOverV0", "V0_PFCand19_logEOverV0", "V0_PFCand19_deltaR",
 
 
-#     "V1_PFCand10_jetaxisDeta", "V1_PFCand10_jetaxisDphi", "V1_PFCand10_logPt", "V1_PFCand10_logE", "V1_PFCand10_logPtOverV1", "V1_PFCand10_logEOverV1", "V1_PFCand10_deltaR",
-#     "V1_PFCand11_jetaxisDeta", "V1_PFCand11_jetaxisDphi", "V1_PFCand11_logPt", "V1_PFCand11_logE", "V1_PFCand11_logPtOverV1", "V1_PFCand11_logEOverV1", "V1_PFCand11_deltaR",
-#     "V1_PFCand12_jetaxisDeta", "V1_PFCand12_jetaxisDphi", "V1_PFCand12_logPt", "V1_PFCand12_logE", "V1_PFCand12_logPtOverV1", "V1_PFCand12_logEOverV1", "V1_PFCand12_deltaR",
-#     "V1_PFCand13_jetaxisDeta", "V1_PFCand13_jetaxisDphi", "V1_PFCand13_logPt", "V1_PFCand13_logE", "V1_PFCand13_logPtOverV1", "V1_PFCand13_logEOverV1", "V1_PFCand13_deltaR",
-#     "V1_PFCand14_jetaxisDeta", "V1_PFCand14_jetaxisDphi", "V1_PFCand14_logPt", "V1_PFCand14_logE", "V1_PFCand14_logPtOverV1", "V1_PFCand14_logEOverV1", "V1_PFCand14_deltaR",
-#     "V1_PFCand15_jetaxisDeta", "V1_PFCand15_jetaxisDphi", "V1_PFCand15_logPt", "V1_PFCand15_logE", "V1_PFCand15_logPtOverV1", "V1_PFCand15_logEOverV1", "V1_PFCand15_deltaR",
-#     "V1_PFCand16_jetaxisDeta", "V1_PFCand16_jetaxisDphi", "V1_PFCand16_logPt", "V1_PFCand16_logE", "V1_PFCand16_logPtOverV1", "V1_PFCand16_logEOverV1", "V1_PFCand16_deltaR",
-#     "V1_PFCand17_jetaxisDeta", "V1_PFCand17_jetaxisDphi", "V1_PFCand17_logPt", "V1_PFCand17_logE", "V1_PFCand17_logPtOverV1", "V1_PFCand17_logEOverV1", "V1_PFCand17_deltaR",
-#     "V1_PFCand18_jetaxisDeta", "V1_PFCand18_jetaxisDphi", "V1_PFCand18_logPt", "V1_PFCand18_logE", "V1_PFCand18_logPtOverV1", "V1_PFCand18_logEOverV1", "V1_PFCand18_deltaR",
-#     "V1_PFCand19_jetaxisDeta", "V1_PFCand19_jetaxisDphi", "V1_PFCand19_logPt", "V1_PFCand19_logE", "V1_PFCand19_logPtOverV1", "V1_PFCand19_logEOverV1", "V1_PFCand19_deltaR",
-# ]
+    "V1_PFCand10_jetaxisDeta", "V1_PFCand10_jetaxisDphi", "V1_PFCand10_logPt", "V1_PFCand10_logE", "V1_PFCand10_logPtOverV1", "V1_PFCand10_logEOverV1", "V1_PFCand10_deltaR",
+    "V1_PFCand11_jetaxisDeta", "V1_PFCand11_jetaxisDphi", "V1_PFCand11_logPt", "V1_PFCand11_logE", "V1_PFCand11_logPtOverV1", "V1_PFCand11_logEOverV1", "V1_PFCand11_deltaR",
+    "V1_PFCand12_jetaxisDeta", "V1_PFCand12_jetaxisDphi", "V1_PFCand12_logPt", "V1_PFCand12_logE", "V1_PFCand12_logPtOverV1", "V1_PFCand12_logEOverV1", "V1_PFCand12_deltaR",
+    "V1_PFCand13_jetaxisDeta", "V1_PFCand13_jetaxisDphi", "V1_PFCand13_logPt", "V1_PFCand13_logE", "V1_PFCand13_logPtOverV1", "V1_PFCand13_logEOverV1", "V1_PFCand13_deltaR",
+    "V1_PFCand14_jetaxisDeta", "V1_PFCand14_jetaxisDphi", "V1_PFCand14_logPt", "V1_PFCand14_logE", "V1_PFCand14_logPtOverV1", "V1_PFCand14_logEOverV1", "V1_PFCand14_deltaR",
+    "V1_PFCand15_jetaxisDeta", "V1_PFCand15_jetaxisDphi", "V1_PFCand15_logPt", "V1_PFCand15_logE", "V1_PFCand15_logPtOverV1", "V1_PFCand15_logEOverV1", "V1_PFCand15_deltaR",
+    "V1_PFCand16_jetaxisDeta", "V1_PFCand16_jetaxisDphi", "V1_PFCand16_logPt", "V1_PFCand16_logE", "V1_PFCand16_logPtOverV1", "V1_PFCand16_logEOverV1", "V1_PFCand16_deltaR",
+    "V1_PFCand17_jetaxisDeta", "V1_PFCand17_jetaxisDphi", "V1_PFCand17_logPt", "V1_PFCand17_logE", "V1_PFCand17_logPtOverV1", "V1_PFCand17_logEOverV1", "V1_PFCand17_deltaR",
+    "V1_PFCand18_jetaxisDeta", "V1_PFCand18_jetaxisDphi", "V1_PFCand18_logPt", "V1_PFCand18_logE", "V1_PFCand18_logPtOverV1", "V1_PFCand18_logEOverV1", "V1_PFCand18_deltaR",
+    "V1_PFCand19_jetaxisDeta", "V1_PFCand19_jetaxisDphi", "V1_PFCand19_logPt", "V1_PFCand19_logE", "V1_PFCand19_logPtOverV1", "V1_PFCand19_logEOverV1", "V1_PFCand19_deltaR",
+]
 
 ## Columns with variables with mirrored values
 
@@ -147,20 +150,20 @@ data_dict = {}
 #     "TagJJ_deta_mirrored", 
 # ]
 
-columns_to_extract = [
-    "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
-    "VV_deta", "VV_dphi", "log_VV_mVV",
-    "TagJJ_deta", #"TagJJ_dphi", #"TagJJ_mJJ",
-    #"log_TagJJ_mJJ",
-    #"log_TagJet0_mass", "log_TagJet1_mass",
-    #"log_TagJet0_pt", "log_TagJet1_pt",
-]
+# columns_to_extract = [
+#     "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
+#     "VV_deta", "VV_dphi", "log_VV_mVV",
+#     "TagJJ_deta", "TagJJ_dphi", #"TagJJ_mJJ",
+#     #"log_TagJJ_mJJ",
+#     #"log_TagJet0_mass", "log_TagJet1_mass",
+#     #"log_TagJet0_pt", "log_TagJet1_pt",
+# ]
 
-feature_names = [
-    r"$p_{\theta}$ of V0", r"$p_{\theta}$ of V1", r"$z^{leading}_{j}$ of V0", r"$z^{leading}_{j}$ of V1", r"$z^{subleading}_{j}$ of V0", r"$z^{subleading}_{j}$ of V1", 
-    r"$\Delta\eta$ of VV", r"$\Delta\phi$ of VV", r"log($m_{VV}$) of VV", 
-    r"$\Delta\eta$ of TagJJ", #r"$\Delta\phi$ of TagJJ", #r"log($m_{JJ})$ of TagJJ",
-]
+# feature_names = [
+#     r"$p_{\theta}$ of V0", r"$p_{\theta}$ of V1", r"$z^{leading}_{j}$ of V0", r"$z^{leading}_{j}$ of V1", r"$z^{subleading}_{j}$ of V0", r"$z^{subleading}_{j}$ of V1", 
+#     r"$\Delta\eta$ of VV", r"$\Delta\phi$ of VV", r"log($m_{VV}$) of VV", 
+#     r"$\Delta\eta$ of TagJJ", r"$\Delta\phi$ of TagJJ", #r"log($m_{JJ})$ of TagJJ",
+# ]
 
 # columns_to_extract = [
 #     "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
@@ -188,7 +191,7 @@ for sample_file in sample_files:
         print(f"  {key}: {len(array)}")
 
 # Define run_id
-run_id = "run004"
+run_id = "run002"
 
 # Find matching weight file with the corresponding run_id
 matching_files = [f for f in os.listdir(weight_dir) if run_id in f and f.endswith(".p")]
@@ -251,7 +254,7 @@ elif polarization_fraction_biased == False:
 
     # Ensure all requested columns are present in each file
     for sample_file in sample_files:
-        missing = [col for col in features if col not in data_dict[sample_file]]
+        missing = [col for col in columns_to_extract if col not in data_dict[sample_file]]
         if missing:
             raise KeyError(f"Missing columns in {sample_file}: {missing}")
 
@@ -426,11 +429,11 @@ for sf_idx, sample_file in enumerate(sample_files):
 xx, yy = som.get_euclidean_coordinates()
 weights = som.get_weights()  # shape: (X_nodes, Y_nodes, num_features)
 
-plt.figure(figsize=(12, 12))
+plt.figure(figsize=(40, 40))
 for i, f in enumerate(columns_to_extract):
-    ax = plt.subplot(3, 4, i+1)
+    ax = plt.subplot(22, 7, i+1)
     ax.set_aspect('equal')
-    ax.set_title(feature_names[i])
+    ax.set_title(columns_to_extract[i])
 
     # Plot each neuron as a hexagon colored by feature value
     for xi in range(weights.shape[0]):
@@ -494,7 +497,7 @@ for sf_idx, sample_file in enumerate(sample_files):
                 data_dict[sample_file][key][:int(total_number_of_samples*fractions_OS[sf_idx])] for key in columns_to_extract
             ])
     else:
-        data_this_file = np.column_stack([
+        data = np.column_stack([
             data_dict[sample_file][key][:number_of_samples_per_file] for key in columns_to_extract
         ])
     

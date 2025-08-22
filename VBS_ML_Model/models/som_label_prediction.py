@@ -23,7 +23,7 @@ numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_w
 
 #sample = "OS"
 sample = "SS"
-polarization_fraction_biased = False
+polarization_fraction_biased = True
 
 
 if sample == "OS":
@@ -36,7 +36,7 @@ if sample == "OS":
         "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
 elif sample == "SS":
-    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/100k/SS"
+    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/polarization_fraction_biased/SS"
 
     sample_files = [
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
@@ -72,7 +72,7 @@ for sample_file in sample_files:
         print(f"  {key}: {len(array)}")
 
 # Define run_id
-run_id = "run001"
+run_id = "run004"
 
 # Find matching weight file with the corresponding run_id
 matching_files = [f for f in os.listdir(weight_dir) if run_id in f and f.endswith(".p")]
@@ -216,8 +216,11 @@ polarization_fractions = Counter()
 
 for x in test_data:
     winner_coord = som.winner(x)
-    polarization_fractions.update({
-        k: v for k, v in polarization_probability_dict[winner_coord].items() if v > 0.5
-    })
+    # polarization_fractions.update({
+    #     k: v for k, v in polarization_probability_dict[winner_coord].items() if v > 0.5
+    # })
+    for pol, v in polarization_probability_dict[winner_coord].items():
+        if v > 0.5:
+            polarization_fractions[pol] = polarization_fractions.get(pol, 0) + 1
 
 print(polarization_fractions)

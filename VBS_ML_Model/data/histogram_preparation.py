@@ -6,7 +6,7 @@ ROOT.EnableImplicitMT(4)
 
 # Define the path to the data files
 data_path = "/eos/user/a/apakkila/VBS_ML_project/data/processed_samples_with_PF_candidates"
-output_path = "/eos/user/a/apakkila/VBS_ML_project/data"
+output_path = "/eos/user/a/apakkila/VBS_ML_project/data/with_PF_candidates"
 
 # List of sample files, comment out either SS or OS
 sample_list = "SS"
@@ -71,6 +71,15 @@ for sample_name in samples:
     df_root = df_root.Define("VV_log_mVV", "TMath::Log(VV_mVV)")
 
     df_root = df_root.Define("TagJJ_log_mJJ", "TMath::Log(TagJJ_mJJ)")
+
+    print(f'Number of rows before filtering: {df_root.Count().GetValue()}')
+
+    # Filter out the entries where either V0_PFCand10_logPt or V0_PFCand10_logE is inf or NaN
+    df_root = df_root.Filter("!isnan(V0_PFCand10_logPt) && !isinf(V0_PFCand10_logPt) && !isnan(V0_PFCand10_logPtOverV0) && !isinf(V0_PFCand10_logPtOverV0)")
+    df_root = df_root.Filter("!isnan(V0_PFCand10_logE) && !isinf(V0_PFCand10_logE)&& !isnan(V0_PFCand10_logEOverV0) && !isinf(V0_PFCand10_logEOverV0)")
+
+    print(f'Number of rows after filtering: {df_root.Count().GetValue()}')
+
 
     # Dictionary for histrograms from multiple files
     histosDict = {}
@@ -246,6 +255,59 @@ for sample_name in samples:
     histosDict["h_V1_SubJet1_phi_" + sample_name] = df_root.Histo1D(("h_V1_SubJet1_phi", "V1_SubJet1_phi", 120, min_V1_SubJet1_phi, max_V1_SubJet1_phi), "V1_SubJet1_phi")
     histosDict["h_V1_SubJet1_mass_" + sample_name] = df_root.Histo1D(("h_V1_SubJet1_mass", "V1_SubJet1_mass", 150, 0, 80), "V1_SubJet1_mass")
     histosDict["h_V1_SubJet1_area_" + sample_name] = df_root.Histo1D(("h_V1_SubJet1_area", "V1_SubJet1_area", 100, min_V1_SubJet1_area, max_V1_SubJet1_area), "V1_SubJet1_area")
+
+    # Histograms for the individual PF candidates    
+
+    min_V0_PFCand10_jetaxisDeta = df_root.Min("V0_PFCand10_jetaxisDeta").GetValue()
+    max_V0_PFCand10_jetaxisDeta = df_root.Max("V0_PFCand10_jetaxisDeta").GetValue()
+    min_V0_PFCand10_jetaxisDphi = df_root.Min("V0_PFCand10_jetaxisDphi").GetValue()
+    max_V0_PFCand10_jetaxisDphi = df_root.Max("V0_PFCand10_jetaxisDphi").GetValue()
+    min_V0_PFCand10_logPt = df_root.Min("V0_PFCand10_logPt").GetValue()
+    max_V0_PFCand10_logPt = df_root.Max("V0_PFCand10_logPt").GetValue()
+    min_V0_PFCand10_logE = df_root.Min("V0_PFCand10_logE").GetValue()
+    max_V0_PFCand10_logE = df_root.Max("V0_PFCand10_logE").GetValue()
+    min_V0_PFCand10_logPtOverV0 = df_root.Min("V0_PFCand10_logPtOverV0").GetValue()
+    max_V0_PFCand10_logPtOverV0 = df_root.Max("V0_PFCand10_logPtOverV0").GetValue()
+    min_V0_PFCand10_logEOverV0 = df_root.Min("V0_PFCand10_logEOverV0").GetValue()
+    max_V0_PFCand10_logEOverV0 = df_root.Max("V0_PFCand10_logEOverV0").GetValue()
+    min_V0_PFCand10_deltaR = df_root.Min("V0_PFCand10_deltaR").GetValue()
+    max_V0_PFCand10_deltaR = df_root.Max("V0_PFCand10_deltaR").GetValue()
+
+    histosDict["h_V0_PFCand10_jetaxisDeta_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDeta", 120, -1, 1), "V0_PFCand10_jetaxisDeta")
+    histosDict["h_V0_PFCand10_jetaxisDphi_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_jetaxisDphi", "V0_PFCand10_jetaxisDphi", 120, -1, 1), "V0_PFCand10_jetaxisDphi")
+    histosDict["h_V0_PFCand10_logPt_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_logPt", "V0_PFCand10_logPt", 120, -2.5, 7.5), "V0_PFCand10_logPt")
+    histosDict["h_V0_PFCand10_logE_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_logE", "V0_PFCand10_logE", 120, -2.5, 8), "V0_PFCand10_logE")
+    histosDict["h_V0_PFCand10_logPtOverV0_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_logPtOverV0", "V0_PFCand10_logPtOverV0", 120, -10, 0), "V0_PFCand10_logPtOverV0")
+    histosDict["h_V0_PFCand10_logEOverV0_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_logEOverV0", "V0_PFCand10_logEOverV0", 120, -10, 0), "V0_PFCand10_logEOverV0")
+    histosDict["h_V0_PFCand10_deltaR_" + sample_name] = df_root.Histo1D(("h_V0_PFCand10_deltaR", "V0_PFCand10_deltaR", 120, 0, 1), "V0_PFCand10_deltaR")
+
+    variables = {
+        "jetaxisDeta": (120, -1, 1),
+        "jetaxisDphi": (120, -1, 1),
+        "logPt": (120, -2.5, 7.5),
+        "logE": (120, -2.5, 8),
+        "logPtOverV0": (120, -10, 0),
+        "logEOverV0": (120, -10, 0),
+        "deltaR": (120, 0, 1),
+    }
+
+    for var, (nbins, low, high) in variables.items():
+        # First candidate (10) → initialize combined histogram
+        h_combined = df_root.Histo1D(
+            (f"h_tmp_10_{var}", f"tmp", nbins, low, high),
+            f"V0_PFCand10_{var}"
+        ).GetValue().Clone(f"h_V0_PFCandAll_{var}")
+
+        # Loop over the rest (11–19)
+        for i in range(11, 20):
+            h_tmp = df_root.Histo1D(
+                (f"h_tmp_{i}_{var}", f"tmp", nbins, low, high),
+                f"V0_PFCand{i}_{var}"
+            ).GetValue()
+            h_combined.Add(h_tmp)
+
+        # Store combined histogram in dict
+        histosDict[f"h_V0_PFCandAll_{var}_{sample_name}"] = h_combined
 
 
     # Save histograms to a ROOT file
