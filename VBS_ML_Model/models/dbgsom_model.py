@@ -1,10 +1,9 @@
 # Polarization state analysis for Vector Boson Scattering
 
-# This file contains the implementation for a Self-Organizing Map (SOM) model
+# This file contains the implementation for a Directed Batch Growing Self-Organizing Map (DBGSOM) model
 # for analyzing polarization states in Vector Boson Scattering (VBS) processes.
 
 # Importing required libraries
-from minisom import MiniSom
 import numpy as np
 import pandas as pd
 import os
@@ -13,22 +12,11 @@ from sklearn.utils import resample
 import time
 import re
 from datetime import datetime
+import matplotlib.pyplot as plt
+import seaborn as sns
+import seaborn.objects as so
 
-def chebyshev_distance(a, b):
-    return np.max(np.abs(a - b))
-
-class ChebyshevSOM(MiniSom):
-    def _find_bmu(self, x):
-        min_dist = np.inf
-        bmu = None
-        for i in range(self._weights.shape[0]):
-            for j in range(self._weights.shape[1]):
-                w = self._weights[i, j, :]
-                dist = chebyshev_distance(x, w)
-                if dist < min_dist:
-                    min_dist = dist
-                    bmu = np.array([i, j])
-        return bmu
+from dbgsom.dbgsom_ import DBGSOM
 
 # Function to get the next run ID based on existing weight files
 def get_next_run_id(output_dir, prefix="run"):
@@ -51,12 +39,11 @@ sample = "SS"
 polarization_fraction_biased = False
 
 # Directory containing the input numpy arrays
-#numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/unnormalized_numpy_arrays_with_PF_candidates/with_mirrored_variables"
 numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
 
 if sample == "OS":
     # Directory to save the trained SOM model weights
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/parameter_search/OS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/dbgsom/gaussian_euclidean/regular_variables/tests/OS"
     os.makedirs(output_dir, exist_ok=True)
 
     # List of sample files to load
@@ -68,7 +55,7 @@ if sample == "OS":
     ]
 
 elif sample == "SS":
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/number_of_nodes/SS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/dbgsom/gaussian_euclidean/regular_variables/tests/SS"
     os.makedirs(output_dir, exist_ok=True)
 
     sample_files = [
@@ -119,13 +106,13 @@ for sample_file in sample_files:
 features = [
     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+    "VV_deta", "VV_dphi", "log_VV_mVV",
+    "TagJJ_deta", 
 
 #     # "V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
-    "VV_deta", "VV_dphi", "log_VV_mVV",
     # "VV_mVV",
 #     # "VV_dphi_mirrored",  
-    "TagJJ_deta", 
 #     "TagJJ_dphi", "TagJJ_mJJ",
 #     # "TagJJ_deta_mirrored",
     
@@ -189,7 +176,7 @@ if polarization_fraction_biased:
         ])
         print("Polarization fraction biased training dataset for OS")
 elif polarization_fraction_biased == False:
-    number_of_samples_per_file = 100000
+    number_of_samples_per_file = 5000
     print(f"Number of samples per file: {number_of_samples_per_file}")
     number_of_samples = len(data_dict) * number_of_samples_per_file
     print(number_of_samples)
@@ -214,34 +201,35 @@ elif polarization_fraction_biased == False:
 
 print(f"Training data shape: {training_data.shape}")
 
+
 #----------------------------------------------------------------------
-# 1. Defining the model paramters for the SOM
+# 1. Initializing the parameters for the DBGSOM model
 #----------------------------------------------------------------------
 
-# Define the dimensions of the SOM grid computed as sqrt(5*sqrt(number of samples))
-#som_shape = (int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))), int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))))
-som_shape = (80,80)
+spreading_factor = 0.5
+growth_criterion = "quantization_error"
+threshold_method = "se"
+sigma_start = 0.2 * np.sqrt(number_of_samples) # for 15000 samples 0.2*sqrt(15000)=24.49
+sigma_end = 1.5
+learning_rate = 0.5 # default value is 0.02
+max_neurons = 150 # default value is 100
 
-# # Grid search for hyperparameters
+som = DBGSOM(
+    spreading_factor=spreading_factor,
+    growth_criterion=growth_criterion,
+    threshold_method=threshold_method,
+    sigma_start=sigma_start,
+    sigma_end=sigma_end,
+    learning_rate=learning_rate,
+    max_neurons=max_neurons,
+)
 
-# # # For gaussian, euclidean
-# sigmas = [1.2, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
-# lrs = [0.05, 0.1, 0.2, 0.5, 0.8, 1.0]
 
-# For triangle, cosine
-# sigmas = [1, 2, 3, 4, 5]
-# lrs = [0.01, 0.1, 0.2, 0.5, 1.0]
+#----------------------------------------------------------------------
+# 2. Training the DBGSOM model
+#----------------------------------------------------------------------
 
-
-sigmas = [6.0]
-lrs = [0.5]
-
-topology = 'hexagonal'  # 'rectangular' or 'hexagonal'
-neighborhood_function = 'gaussian'
-activation_distance = 'euclidean'
-
-quantization_errors = []
-topographic_errors = []
+run_id = get_next_run_id(output_dir)
 
 # Path for logging all runs into one file
 log_file_path = os.path.join(output_dir, f'{get_next_run_id(output_dir)}som_training_log.txt')
@@ -249,88 +237,39 @@ log_file_path = os.path.join(output_dir, f'{get_next_run_id(output_dir)}som_trai
 # If log file doesn't exist, write header
 if not os.path.exists(log_file_path):
     with open(log_file_path, "w") as log_file:
-        log_file.write("datetime,run_id,number_of_samples,som_shape,lr,sigma,weight_init_elapsed_time,elapsed_time,quantization_error, topographic_error, features\n")
+        log_file.write("datetime,run_id,number_of_samples,spreading_factor,lr,sigma_start,sigma_end,elapsed_time,quantization_error,topographic_error,features\n")
+
+
+start_time = time.time()
+print(f"Started training DBGSOM model at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+som.fit(training_data)
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Training completed in {elapsed_time:.2f} seconds.")
+
+qe = som.calculate_quantization_error(training_data)
+te = som._calculate_topographic_error(training_data)
 
 
 #----------------------------------------------------------------------
-# 2. Training the SOM and saving the model weights
+# 3. Saving the model weights and training parameters
 #----------------------------------------------------------------------
 
-for sigma in sigmas:
-    for lr in lrs:
-        print(f"Training SOM with sigma: {sigma}, learning rate: {lr}")
+# Save the training parameters and errors to the log file
+with open(log_file_path, "a") as log_file:
+    log_file.write(
+        f"{datetime.now()},{run_id},{number_of_samples},{spreading_factor},{learning_rate},{sigma_start},{sigma_end},{elapsed_time:.4f},{qe:.6f},{te:.6f},{features}\n"
+    )
 
-        som = MiniSom(
-            x=som_shape[0], 
-            y=som_shape[1], 
-            input_len=training_data.shape[1], 
-            sigma=sigma, 
-            learning_rate=lr, 
-            neighborhood_function=neighborhood_function,
-            activation_distance=activation_distance,
-            decay_function='asymptotic_decay',
-            topology=topology,
-            sigma_decay_function='asymptotic_decay'
-        )
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        subset = resample(training_data, n_samples=int(0.01 * len(training_data)), random_state=42)
-
-        weight_init_start_time = time.time()
-        som.pca_weights_init(subset)
-        weight_init_end_time = time.time()
-        weight_init_elapsed_time = weight_init_end_time - weight_init_start_time
-        print(f"SOM weights initialized in ({weight_init_elapsed_time/60:.2f} minutes).")
-
-        start_time = time.time()
-        som.train(
-            data=training_data, 
-            num_iteration=100,
-            verbose=True,
-            use_epochs=True,
-            random_order=True
-        )
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        qe = som.quantization_error(training_data)
-        te = som.topographic_error(training_data)
-        print(f"SOM training completed in {elapsed_time:.2f} seconds "
-            f"({elapsed_time/60:.2f} minutes) with QE {qe} and TE {te}.")
-
-        quantization_errors.append(qe)
-        topographic_errors.append(te)
-
-        # Generate run_id
-        run_id = get_next_run_id(output_dir)
-
-        if polarization_fraction_biased:
-            # Append results to log file
-            with open(log_file_path, "a") as log_file:
-                log_file.write(
-                    f"{datetime.now()},{run_id},{total_number_of_samples},{som_shape},{lr},{sigma},{weight_init_elapsed_time:.4f},{elapsed_time:.4f},{qe:.6f},{te:.6f}, {features}\n"
-                )
-        else:
-            # Append results to log file
-            with open(log_file_path, "a") as log_file:
-                log_file.write(
-                    f"{datetime.now()},{run_id},{number_of_samples},{som_shape},{lr},{sigma},{weight_init_elapsed_time:.4f},{elapsed_time:.4f},{qe:.6f},{te:.6f}, {features}\n"
-                )
-
-        # Save the trained SOM model
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        if polarization_fraction_biased == True:
-            output_file_path = os.path.join(
-                output_dir,
-                f'som_weights_{sample}_{run_id}_{timestamp}_lr_{lr:.2f}_sigma_{sigma:.2f}_samples_{total_number_of_samples}_{topology}_{neighborhood_function}_{activation_distance}.p'
-            )
-        else:
-            output_file_path = os.path.join(
+# Saving the model weights
+output_file_path = os.path.join(
             output_dir,
-            f'som_weights_{sample}_{run_id}_{timestamp}_lr_{lr:.2f}_sigma_{sigma:.2f}_samples_{number_of_samples}_{topology}_{neighborhood_function}_{activation_distance}.p'
-        )
-        with open(output_file_path, 'wb') as outfile:
+            f'som_weights_{sample}_{run_id}_{timestamp}_max_neurons_{max_neurons}_lr_{learning_rate}_sigma_start_{sigma_start:.2f}_sigma_end{sigma_end:.2f}_samples_{number_of_samples}.p')
+
+with open(output_file_path, 'wb') as outfile:
             pickle.dump(som, outfile)
-        print(f"SOM model saved to: {output_file_path}")
-
-
-print(f'Quantization errors for different configurations: {quantization_errors}')
-print(f'Topographic errors for different configurations: {topographic_errors}')
+print(f"SOM model saved to: {output_file_path}")

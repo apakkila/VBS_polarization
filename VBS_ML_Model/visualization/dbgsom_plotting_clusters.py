@@ -1,10 +1,3 @@
-# Polarization state analysis for Vector Boson Scattering
-
-# This file contains the implementation for a Self-Organizing Map (SOM) model
-# for analyzing polarization states in Vector Boson Scattering (VBS) processes.
-
-# Importing required libraries
-from minisom import MiniSom
 import numpy as np
 import pandas as pd
 import os
@@ -13,22 +6,11 @@ from sklearn.utils import resample
 import time
 import re
 from datetime import datetime
+import matplotlib.pyplot as plt
+import seaborn as sns
+import seaborn.objects as so
 
-def chebyshev_distance(a, b):
-    return np.max(np.abs(a - b))
-
-class ChebyshevSOM(MiniSom):
-    def _find_bmu(self, x):
-        min_dist = np.inf
-        bmu = None
-        for i in range(self._weights.shape[0]):
-            for j in range(self._weights.shape[1]):
-                w = self._weights[i, j, :]
-                dist = chebyshev_distance(x, w)
-                if dist < min_dist:
-                    min_dist = dist
-                    bmu = np.array([i, j])
-        return bmu
+from dbgsom.dbgsom_ import DBGSOM
 
 # Function to get the next run ID based on existing weight files
 def get_next_run_id(output_dir, prefix="run"):
@@ -51,12 +33,11 @@ sample = "SS"
 polarization_fraction_biased = False
 
 # Directory containing the input numpy arrays
-#numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/unnormalized_numpy_arrays_with_PF_candidates/with_mirrored_variables"
 numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
 
 if sample == "OS":
     # Directory to save the trained SOM model weights
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/parameter_search/OS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/dbgsom/gaussian_euclidean/regular_variables/tests/OS"
     os.makedirs(output_dir, exist_ok=True)
 
     # List of sample files to load
@@ -68,8 +49,10 @@ if sample == "OS":
     ]
 
 elif sample == "SS":
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/number_of_nodes/SS"
-    os.makedirs(output_dir, exist_ok=True)
+    weight_dir = "/eos/user/a/apakkila/VBS_ML_project/models/dbgsom/gaussian_euclidean/regular_variables/tests/SS"
+    cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/dbgsom/gaussian_euclidean/regular_variables/tests/SS"
+
+    os.makedirs(cluster_plots_dir, exist_ok=True)
 
     sample_files = [
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
@@ -116,16 +99,16 @@ for sample_file in sample_files:
 #             # "TagJet1_eta", "TagJet1_pt", "TagJet1_phi", "TagJet1_mass", "TagJet1_area"
 #         ]
 
-features = [
+columns_to_extract = [
     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+    "VV_deta", "VV_dphi", "log_VV_mVV",
+    "TagJJ_deta", 
 
 #     # "V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
-    "VV_deta", "VV_dphi", "log_VV_mVV",
     # "VV_mVV",
 #     # "VV_dphi_mirrored",  
-    "TagJJ_deta", 
 #     "TagJJ_dphi", "TagJJ_mJJ",
 #     # "TagJJ_deta_mirrored",
     
@@ -163,6 +146,13 @@ features = [
 # ]
 
 
+# Load data from each file
+for sample_file in sample_files:
+    file_path = os.path.join(numpy_path, sample_file)
+    print(f"Loading data from {file_path}...")
+    data = np.load(file_path)
+    data_dict[sample_file] = {key: data[key] for key in data.files}
+
 # Print the length of each array (column) in each sample file
 for sample_file in sample_files:
     print(f"\nLengths for sample: {sample_file}")
@@ -170,167 +160,174 @@ for sample_file in sample_files:
         array = data_dict[sample_file][key]
         print(f"  {key}: {len(array)}")
 
+# Define run_id
+run_id = "run001"
+
+# Find matching weight file with the corresponding run_id
+matching_files = [f for f in os.listdir(weight_dir) if run_id in f and f.endswith(".p")]
+
+if not matching_files:
+    raise FileNotFoundError(f"No weight file found in {weight_dir} with run_id '{run_id}'")
+
+# If multiple matches, choose the most recent by timestamp in filename (if applicable)
+input_weights_file = sorted(matching_files)[-1]
+
+input_file_path = os.path.join(weight_dir, input_weights_file)
+
+# Read the SOM weights from the file
+with open(input_file_path, 'rb') as infile:
+    som = pickle.load(infile)
+
+# Try to extract number_of_samples from filename
+match = re.search(r"samples_(\d+)", input_weights_file)
+if match:
+    total_samples = int(match.group(1))
+    number_of_samples_per_file = total_samples // len(sample_files)
+    print(f"Extracted number_of_samples_per_file: {number_of_samples_per_file}")
+else:
+    raise ValueError(f"Could not extract number_of_samples from filename: {input_weights_file}")
+
+# Ensure all requested columns are present in each file
+for sample_file in sample_files:
+    missing = [col for col in columns_to_extract if col not in data_dict[sample_file]]
+    if missing:
+        raise KeyError(f"Missing columns in {sample_file}: {missing}")
+
 
 if polarization_fraction_biased:
     total_number_of_samples = 300000
     if sample == "SS":
         training_data = np.concatenate([
-            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.29)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in features])
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.29)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in columns_to_extract])
         ])
-        print("Polarization fraction biased training dataset for SS")
+        print(f'Polarization fraction biased training dataset for SS with {int(total_number_of_samples*0.1)}, {int(total_number_of_samples*0.29)}, {int(total_number_of_samples*0.61)} events')
     elif sample == "OS":
         training_data = np.concatenate([
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in columns_to_extract]),
         ])
         print("Polarization fraction biased training dataset for OS")
+
+            # Initialize labels for the training data
+    if sample == "OS":
+        labels = np.array(['LL'] * int(total_number_of_samples*0.1) + ['LT'] * int(total_number_of_samples*0.145) + ['TL'] * int(total_number_of_samples*0.145) + ['TT'] * int(total_number_of_samples*0.61))
+        label_names = ['LL', 'LT', 'TL', 'TT']
+    elif sample == "SS":
+        labels = np.array(['LL'] * int(total_number_of_samples*0.1) + ['LTTL'] * int(total_number_of_samples*0.29) + ['TT'] * int(total_number_of_samples*0.61))
+        label_names = ['LL', 'LTTL', 'TT']
 elif polarization_fraction_biased == False:
-    number_of_samples_per_file = 100000
-    print(f"Number of samples per file: {number_of_samples_per_file}")
-    number_of_samples = len(data_dict) * number_of_samples_per_file
-    print(number_of_samples)
+
 
     # Ensure all requested columns are present in each file
     for sample_file in sample_files:
-        missing = [col for col in features if col not in data_dict[sample_file]]
+        missing = [col for col in columns_to_extract if col not in data_dict[sample_file]]
         if missing:
             raise KeyError(f"Missing columns in {sample_file}: {missing}")
 
     # Extract only the specified columns
     training_data = np.concatenate([
-        np.column_stack([data_dict[sample_file][key][:number_of_samples_per_file] for key in features])
+        np.column_stack([data_dict[sample_file][key][:number_of_samples_per_file] for key in columns_to_extract])
         for sample_file in sample_files
     ])
 
+    # Initialize labels for the training data
+    if sample == "OS":
+        labels = np.array(['LL'] * number_of_samples_per_file + ['LT'] * number_of_samples_per_file + ['TL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
+        label_names = ['LL', 'LT', 'TL', 'TT']
+    elif sample == "SS":
+        labels = np.array(['LL'] * number_of_samples_per_file + ['LTTL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
+        label_names = ['LL', 'LTTL', 'TT']
+    print("Non-biased training dataset loaded")
 
-# training_data = np.concatenate([
-#     np.column_stack([data_dict[sample_file][key] for key in features])
-#     for sample_file in sample_files
-# ])
-
-print(f"Training data shape: {training_data.shape}")
-
-#----------------------------------------------------------------------
-# 1. Defining the model paramters for the SOM
-#----------------------------------------------------------------------
-
-# Define the dimensions of the SOM grid computed as sqrt(5*sqrt(number of samples))
-#som_shape = (int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))), int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))))
-som_shape = (80,80)
-
-# # Grid search for hyperparameters
-
-# # # For gaussian, euclidean
-# sigmas = [1.2, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
-# lrs = [0.05, 0.1, 0.2, 0.5, 0.8, 1.0]
-
-# For triangle, cosine
-# sigmas = [1, 2, 3, 4, 5]
-# lrs = [0.01, 0.1, 0.2, 0.5, 1.0]
-
-
-sigmas = [6.0]
-lrs = [0.5]
-
-topology = 'hexagonal'  # 'rectangular' or 'hexagonal'
-neighborhood_function = 'gaussian'
-activation_distance = 'euclidean'
-
-quantization_errors = []
-topographic_errors = []
-
-# Path for logging all runs into one file
-log_file_path = os.path.join(output_dir, f'{get_next_run_id(output_dir)}som_training_log.txt')
-
-# If log file doesn't exist, write header
-if not os.path.exists(log_file_path):
-    with open(log_file_path, "w") as log_file:
-        log_file.write("datetime,run_id,number_of_samples,som_shape,lr,sigma,weight_init_elapsed_time,elapsed_time,quantization_error, topographic_error, features\n")
 
 
 #----------------------------------------------------------------------
-# 2. Training the SOM and saving the model weights
+# 1. Plot the cluster plots for the trained DBGSOM model
 #----------------------------------------------------------------------
 
-for sigma in sigmas:
-    for lr in lrs:
-        print(f"Training SOM with sigma: {sigma}, learning rate: {lr}")
+counts_for_overlaps = []
 
-        som = MiniSom(
-            x=som_shape[0], 
-            y=som_shape[1], 
-            input_len=training_data.shape[1], 
-            sigma=sigma, 
-            learning_rate=lr, 
-            neighborhood_function=neighborhood_function,
-            activation_distance=activation_distance,
-            decay_function='asymptotic_decay',
-            topology=topology,
-            sigma_decay_function='asymptotic_decay'
-        )
+for sf_idx, sample_file in enumerate(sample_files):
+    
+    print(f"Processing sample file: {sample_file}")
+    data_this_file = np.column_stack([
+            data_dict[sample_file][key][:number_of_samples_per_file] for key in columns_to_extract
+        ])
 
-        subset = resample(training_data, n_samples=int(0.01 * len(training_data)), random_state=42)
+    # Compute point counts for each neuron in the trained model
+    winning_nodes = som._get_winning_neurons(data_this_file, n_bmu=1)
+    unique, counts = np.unique(winning_nodes, axis=0, return_counts=True)
+    counts_for_overlaps.append(counts)
+    coordinates = np.array(som.neurons_)
+    
+    print(f"Coordinate ranges - X: {coordinates[:, 0].min()}-{coordinates[:, 0].max()}, Y: {coordinates[:, 1].min()}-{coordinates[:, 1].max()}")
+    print(f"Number of neurons: {len(coordinates)}")
+    
+    # Determine the actual SOM grid dimensions and offsets from the coordinates
+    min_x, max_x = int(coordinates[:, 0].min()), int(coordinates[:, 0].max())
+    min_y, max_y = int(coordinates[:, 1].min()), int(coordinates[:, 1].max())
+    
+    # Calculate grid dimensions (add 1 because we need to include both min and max)
+    grid_width = max_x - min_x + 1
+    grid_height = max_y - min_y + 1
+    
+    print(f"Creating density map with dimensions: {grid_width} x {grid_height}")
+    print(f"Coordinate offsets - X offset: {-min_x}, Y offset: {-min_y}")
+    
+    # Create density map with correct dimensions
+    density_map = np.zeros((grid_width, grid_height), dtype=int)
+    
+    # Fill the density map (shift coordinates to start from 0)
+    for coordinate, count in zip(coordinates, counts):
+        x = int(coordinate[0]) - min_x
+        y = int(coordinate[1]) - min_y
+        density_map[x, y] = count
 
-        weight_init_start_time = time.time()
-        som.pca_weights_init(subset)
-        weight_init_end_time = time.time()
-        weight_init_elapsed_time = weight_init_end_time - weight_init_start_time
-        print(f"SOM weights initialized in ({weight_init_elapsed_time/60:.2f} minutes).")
+    # Normalize the counts to [0, 1] range for better visualization
+    if np.max(density_map) > 0:
+        density_map = density_map.astype(float) / np.max(density_map)
 
-        start_time = time.time()
-        som.train(
-            data=training_data, 
-            num_iteration=100,
-            verbose=True,
-            use_epochs=True,
-            random_order=True
-        )
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        qe = som.quantization_error(training_data)
-        te = som.topographic_error(training_data)
-        print(f"SOM training completed in {elapsed_time:.2f} seconds "
-            f"({elapsed_time/60:.2f} minutes) with QE {qe} and TE {te}.")
-
-        quantization_errors.append(qe)
-        topographic_errors.append(te)
-
-        # Generate run_id
-        run_id = get_next_run_id(output_dir)
-
-        if polarization_fraction_biased:
-            # Append results to log file
-            with open(log_file_path, "a") as log_file:
-                log_file.write(
-                    f"{datetime.now()},{run_id},{total_number_of_samples},{som_shape},{lr},{sigma},{weight_init_elapsed_time:.4f},{elapsed_time:.4f},{qe:.6f},{te:.6f}, {features}\n"
-                )
-        else:
-            # Append results to log file
-            with open(log_file_path, "a") as log_file:
-                log_file.write(
-                    f"{datetime.now()},{run_id},{number_of_samples},{som_shape},{lr},{sigma},{weight_init_elapsed_time:.4f},{elapsed_time:.4f},{qe:.6f},{te:.6f}, {features}\n"
-                )
-
-        # Save the trained SOM model
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        if polarization_fraction_biased == True:
-            output_file_path = os.path.join(
-                output_dir,
-                f'som_weights_{sample}_{run_id}_{timestamp}_lr_{lr:.2f}_sigma_{sigma:.2f}_samples_{total_number_of_samples}_{topology}_{neighborhood_function}_{activation_distance}.p'
-            )
-        else:
-            output_file_path = os.path.join(
-            output_dir,
-            f'som_weights_{sample}_{run_id}_{timestamp}_lr_{lr:.2f}_sigma_{sigma:.2f}_samples_{number_of_samples}_{topology}_{neighborhood_function}_{activation_distance}.p'
-        )
-        with open(output_file_path, 'wb') as outfile:
-            pickle.dump(som, outfile)
-        print(f"SOM model saved to: {output_file_path}")
+    # Plot the density map for this sample file
+    plt.figure(figsize=(12, 12), dpi=300)
+    plt.imshow(density_map.T, cmap='viridis', origin='lower')
+    plt.colorbar(label='Normalized Count')
+    plt.title(f'Density Map of Winning Neurons for {sample_file}')
+    plt.xlabel('SOM X')
+    plt.ylabel('SOM Y')
+    plt.savefig(f"{cluster_plots_dir}/dbgsom_density_map_{sample}_sf{sf_idx+1}_{run_id}_samples_{total_samples}.png", dpi=300, bbox_inches="tight")
+    plt.close()
 
 
-print(f'Quantization errors for different configurations: {quantization_errors}')
-print(f'Topographic errors for different configurations: {topographic_errors}')
+# Compute overlaps between sample distributions
+
+LL_counts = counts_for_overlaps[0]
+LTTL_counts = counts_for_overlaps[1]
+TT_counts = counts_for_overlaps[2]
+
+overlap_LL_LTTL = np.sum(np.minimum(LL_counts, LTTL_counts))
+overlap_LL_TT = np.sum(np.minimum(LL_counts, TT_counts))
+
+overlap_fraction_LL_LTTL = overlap_LL_LTTL / np.sum(LL_counts) if np.sum(LL_counts) > 0 else 0
+overlap_fraction_LL_TT = overlap_LL_TT / np.sum(LL_counts) if np.sum(LL_counts) > 0 else 0
+
+print(f"Overlap LL-LTTL: {overlap_LL_LTTL}/{np.sum(LL_counts)} ({overlap_fraction_LL_LTTL:.2%} of LL)")
+print(f"Overlap LL-TT: {overlap_LL_TT}/{np.sum(LL_counts)} ({overlap_fraction_LL_TT:.2%} of LL)")
+
+
+# # f = plt.figure(figsize=(5, 5), dpi=300)
+# labels = list(dict(som.som_.nodes.data("label")).values())
+# coordinates = np.array(som.neurons_)
+# print(labels)
+# print(type(labels))
+
+# p = (
+#     so.Plot(x=coordinates[:, 0], y=coordinates[:, 1], color=labels)
+#     .add(so.Dot())
+#     .scale(color="Set1")
+# )
+
+# p.save(f"{cluster_plots_dir}/dbgsom_cluster_plot_{sample}_{run_id}_samples_{total_samples}.png", dpi=300, bbox_inches="tight")

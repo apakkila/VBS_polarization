@@ -429,7 +429,7 @@ for sf_idx, sample_file in enumerate(sample_files):
 xx, yy = som.get_euclidean_coordinates()
 weights = som.get_weights()  # shape: (X_nodes, Y_nodes, num_features)
 
-plt.figure(figsize=(40, 40))
+plt.figure(figsize=(25, 60))
 for i, f in enumerate(columns_to_extract):
     ax = plt.subplot(22, 7, i+1)
     ax.set_aspect('equal')
