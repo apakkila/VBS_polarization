@@ -8,7 +8,7 @@ import dcor
 sample = "SS"
 # sample = "OS"
 
-numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
+numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates_filtered"
 if sample == "OS":
     output_dir = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/OS/distance_correlations"
     sample_files = [

@@ -8,7 +8,7 @@ ROOT.EnableImplicitMT(4)
 # Define the path to the data files
 data_path = "/eos/user/a/apakkila/VBS_ML_project/data/processed_samples_with_PF_candidates"
 
-output_dir = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
+output_dir = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates_filtered"
 
 os.makedirs(output_dir, exist_ok=True)
 
@@ -262,8 +262,8 @@ def process_samples(sample_list, data_path, output_dir):
 
 
 # Choose which sample will be processed
-#sample = "OS"
-sample = "SS"
+sample = "OS"
+#sample = "SS"
 
 if sample == "OS":
 # List of sample files

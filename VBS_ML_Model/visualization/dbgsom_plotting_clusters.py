@@ -103,7 +103,7 @@ columns_to_extract = [
     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
     "VV_deta", "VV_dphi", "log_VV_mVV",
-    "TagJJ_deta", 
+    "TagJJ_deta",
 
 #     # "V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
@@ -161,7 +161,7 @@ for sample_file in sample_files:
         print(f"  {key}: {len(array)}")
 
 # Define run_id
-run_id = "run001"
+run_id = "run018"
 
 # Find matching weight file with the corresponding run_id
 matching_files = [f for f in os.listdir(weight_dir) if run_id in f and f.endswith(".p")]
@@ -260,6 +260,7 @@ for sf_idx, sample_file in enumerate(sample_files):
 
     # Compute point counts for each neuron in the trained model
     winning_nodes = som._get_winning_neurons(data_this_file, n_bmu=1)
+    print(winning_nodes.shape)
     unique, counts = np.unique(winning_nodes, axis=0, return_counts=True)
     counts_for_overlaps.append(counts)
     coordinates = np.array(som.neurons_)
@@ -289,7 +290,7 @@ for sf_idx, sample_file in enumerate(sample_files):
 
     # Normalize the counts to [0, 1] range for better visualization
     if np.max(density_map) > 0:
-        density_map = density_map.astype(float) / np.max(density_map)
+        density_map = density_map.astype(float) / np.sum(counts)
 
     # Plot the density map for this sample file
     plt.figure(figsize=(12, 12), dpi=300)

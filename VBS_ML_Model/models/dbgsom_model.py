@@ -107,7 +107,7 @@ features = [
     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
     "VV_deta", "VV_dphi", "log_VV_mVV",
-    "TagJJ_deta", 
+    "TagJJ_deta",
 
 #     # "V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
@@ -206,13 +206,16 @@ print(f"Training data shape: {training_data.shape}")
 # 1. Initializing the parameters for the DBGSOM model
 #----------------------------------------------------------------------
 
-spreading_factor = 0.5
+
+max_iter = 1000 # Determines the maximum number of training epochs
+spreading_factor = 0.8
 growth_criterion = "quantization_error"
 threshold_method = "se"
 sigma_start = 0.2 * np.sqrt(number_of_samples) # for 15000 samples 0.2*sqrt(15000)=24.49
-sigma_end = 1.5
+sigma_end = 1.2
 learning_rate = 0.5 # default value is 0.02
-max_neurons = 150 # default value is 100
+max_neurons = 250 # default value is 100
+coarse_traing_frac = 0.8
 
 som = DBGSOM(
     spreading_factor=spreading_factor,
@@ -222,6 +225,7 @@ som = DBGSOM(
     sigma_end=sigma_end,
     learning_rate=learning_rate,
     max_neurons=max_neurons,
+    vertical_growth=False,
 )
 
 

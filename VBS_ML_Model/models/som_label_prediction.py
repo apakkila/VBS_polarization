@@ -19,15 +19,19 @@ from collections import Counter
 
 # Directory containing the input numpy arrays
 #numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/unnormalized_numpy_arrays_with_PF_candidates/with_mirrored_variables"
-numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
+numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates_filtered"
 
 #sample = "OS"
-sample = "SS"
-polarization_fraction_biased = True
+#sample = "SS"
+sample = "both"
+
+polarization_fraction_biased_training = True
+polarization_fraction_biased_test = True
 
 
 if sample == "OS":
     weight_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/parameter_search/OS"
+    # weight_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/polarization_fraction_biased/OS"
     
     sample_files = [
         "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
@@ -43,15 +47,31 @@ elif sample == "SS":
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
+elif sample == "both":
+    weight_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/polarization_fraction_biased/both"
+
+    sample_files = [
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
+    ]
 
 # Dictionary to store loaded data
 data_dict = {}
 
 
 columns_to_extract = [
-    "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
-    "VV_deta", "VV_dphi", "log_VV_mVV",
-    "TagJJ_deta", #"TagJJ_dphi", #"TagJJ_mJJ",
+    #'V0_p_theta', 'V1_p_theta', 'V0_z_j_leading', 'V1_z_j_leading', 'V0_z_j_subleading', 'V1_z_j_subleading', 'VV_deta', 'VV_dphi', 'TagJJ_deta' # OS, use run006
+    
+    #'V0_p_theta', 'V1_p_theta', 'V0_z_j_leading', 'V1_z_j_leading', 'V0_z_j_subleading', 'V1_z_j_subleading', 'VV_deta', 'log_VV_mVV', 'VV_dphi', 'TagJJ_deta' # SS non-polarization fraction biased, use run001
+
+    'V0_p_theta', 'V1_p_theta', 'V0_z_j_leading', 'V1_z_j_leading', 'V0_z_j_subleading', 'V1_z_j_subleading', 'VV_deta', 'VV_dphi', 'log_VV_mVV', 'TagJJ_deta' # SS or both polarization fraction biased, use run004
+    
+     #"TagJJ_dphi", #"TagJJ_mJJ",
     #"log_TagJJ_mJJ",
     #"log_TagJet0_mass", "log_TagJet1_mass",
     #"log_TagJet0_pt", "log_TagJet1_pt",
@@ -72,7 +92,7 @@ for sample_file in sample_files:
         print(f"  {key}: {len(array)}")
 
 # Define run_id
-run_id = "run004"
+run_id = "run001"
 
 # Find matching weight file with the corresponding run_id
 matching_files = [f for f in os.listdir(weight_dir) if run_id in f and f.endswith(".p")]
@@ -98,31 +118,71 @@ if match:
 else:
     raise ValueError(f"Could not extract number_of_samples from filename: {input_weights_file}")
 
-if polarization_fraction_biased:
-    total_number_of_samples = 300000
+if polarization_fraction_biased_training:
+    total_number_of_samples = 200000
     if sample == "SS":
+
+        # LL_frac_SS = 0.08763931
+        # LTTL_frac_SS = 0.41286727
+        # TT_frac_SS = 0.49949341
+        LL_frac_SS = 0.1
+        LTTL_frac_SS = 0.29
+        TT_frac_SS = 0.61
         training_data = np.concatenate([
-            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in columns_to_extract]),
-            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.29)] for key in columns_to_extract]),
-            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in columns_to_extract])
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*LL_frac_SS)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*LTTL_frac_SS)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*TT_frac_SS)] for key in columns_to_extract])
         ])
-        print(f'Polarization fraction biased training dataset for SS with {int(total_number_of_samples*0.1)}, {int(total_number_of_samples*0.29)}, {int(total_number_of_samples*0.61)} events')
+        print(f'Polarization fraction biased training dataset for SS with {int(total_number_of_samples*LL_frac_SS)} LL, {int(total_number_of_samples*LTTL_frac_SS)} LTTL, {int(total_number_of_samples*TT_frac_SS)} TT events')
     elif sample == "OS":
+
+        LL_frac_OS = 0.07357768 
+        LT_frac_OS = 0.16069475 
+        TL_frac_OS = 0.17026805 
+        TT_frac_OS = 0.59545952
+
         training_data = np.concatenate([
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in columns_to_extract]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in columns_to_extract]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in columns_to_extract]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*LL_frac_OS)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*LT_frac_OS)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*TL_frac_OS)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*TT_frac_OS)] for key in columns_to_extract]),
         ])
-        print(f'Polarization fraction biased training dataset for SS with {int(total_number_of_samples*0.1)}, {int(total_number_of_samples*0.29)}, {int(total_number_of_samples*0.61)} events')
+        print(f'Polarization fraction biased training dataset for SS with {int(total_number_of_samples*LL_frac_OS)} LL, {int(total_number_of_samples*LT_frac_OS)} LT, {int(total_number_of_samples*TL_frac_OS)} TL, {int(total_number_of_samples*TT_frac_OS)} TT events')
+    elif sample == "both":
+
+        # LL: 0.02643643
+        # LTTL: 0.12454156
+        # TT: 0.15067237
+
+        # LL: 0.05138295
+        # LT: 0.11222112
+        # TL: 0.11890663
+        # TT: 0.41583894
+
+        training_data = np.concatenate([
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.05138295)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.11222112)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.11890663)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.41583894)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.02643643)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.12454156)] for key in columns_to_extract]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.15067237)] for key in columns_to_extract]),
+        ])
+        print(f'Polarization fraction biased training dataset for both with {int(total_number_of_samples*0.05138295)} LL, {int(total_number_of_samples*0.11222112)} LT, {int(total_number_of_samples*0.11890663)} TL, {int(total_number_of_samples*0.41583894)} TT, {int(total_number_of_samples*0.02643643)} LL, {int(total_number_of_samples*0.12454156)} LTTL, {int(total_number_of_samples*0.15067237)} TT events')
+
+
     if sample == "OS":
-        labels = np.array(['LL'] * int(total_number_of_samples*0.1) + ['LT'] * int(total_number_of_samples*0.145) + ['TL'] * int(total_number_of_samples*0.145) + ['TT'] * int(total_number_of_samples*0.61))
+        labels = np.array(['LL'] * int(total_number_of_samples*LL_frac_OS) + ['LT'] * int(total_number_of_samples*LT_frac_OS) + ['TL'] * int(total_number_of_samples*TL_frac_OS) + ['TT'] * int(total_number_of_samples*TT_frac_OS))
         label_names = ['LL', 'LT', 'TL', 'TT']
     elif sample == "SS":
-        labels = np.array(['LL'] * int(total_number_of_samples*0.1) + ['LTTL'] * int(total_number_of_samples*0.29) + ['TT'] * int(total_number_of_samples*0.61))
+        labels = np.array(['LL'] * int(total_number_of_samples*LL_frac_SS) + ['LTTL'] * int(total_number_of_samples*LTTL_frac_SS) + ['TT'] * int(total_number_of_samples*TT_frac_SS))
         label_names = ['LL', 'LTTL', 'TT']
-elif polarization_fraction_biased == False:
-    number_of_samples_per_file = 100000
+    elif sample == "both":
+        labels = np.array(['LL_OS'] * int(total_number_of_samples*0.05138295) + ['LT'] * int(total_number_of_samples*0.11222112) + ['TL'] * int(total_number_of_samples*0.11890663) + ['TT_OS'] * int(total_number_of_samples*0.41583894) + ['LL_SS'] * int(total_number_of_samples*0.02643643) + ['LTTL'] * int(total_number_of_samples*0.12454156) + ['TT_SS'] * int(total_number_of_samples*0.15067237))
+        label_names = ['LL_OS', 'LT', 'TL', 'TT_OS', 'LL_SS', 'LTTL', 'TT_SS']
+
+elif polarization_fraction_biased_training == False:
+    number_of_samples_per_file = 50000
     print(f"Number of samples per file: {number_of_samples_per_file}")
     number_of_samples = len(data_dict) * number_of_samples_per_file
     print(number_of_samples)
@@ -143,24 +203,80 @@ elif polarization_fraction_biased == False:
     if sample == "OS":
         labels = np.array(['LL'] * number_of_samples_per_file + ['LT'] * number_of_samples_per_file + ['TL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
         label_names = ['LL', 'LT', 'TL', 'TT']
+        total_number_of_samples = 4*number_of_samples_per_file
     elif sample == "SS":
+        total_number_of_samples = 3*number_of_samples_per_file
         labels = np.array(['LL'] * number_of_samples_per_file + ['LTTL'] * number_of_samples_per_file + ['TT'] * number_of_samples_per_file)
         label_names = ['LL', 'LTTL', 'TT']
 
 index1 = number_of_samples_per_file+1
 index2 = int(1.5*number_of_samples_per_file)
 
+
 if sample == "SS":
+    # test_data = np.concatenate([
+    #     np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:115000] for key in columns_to_extract]), 
+    #     np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:143500] for key in columns_to_extract]),
+    #     np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:191500] for key in columns_to_extract]), 
+    # ])
     test_data = np.concatenate([
-        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:115000] for key in columns_to_extract]), 
-        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:143500] for key in columns_to_extract]),
-        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:191500] for key in columns_to_extract]), 
+        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:150000] for key in columns_to_extract]), 
+        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:150000] for key in columns_to_extract]),
+        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][100001:150000] for key in columns_to_extract]), 
     ])
-else:
+elif sample == "OS":
+    test_samples = 125000
+
+    LL_frac_OS = 0.07357768 
+    LT_frac_OS = 0.16069475 
+    TL_frac_OS = 0.17026805 
+    TT_frac_OS = 0.59545952
+
+    if polarization_fraction_biased_test == False:
+        LL_frac_OS = 0.25
+        LT_frac_OS = 0.25
+        TL_frac_OS = 0.25
+        TT_frac_OS = 0.25
+
     test_data = np.concatenate([
-        np.column_stack([data_dict[sample_file][key][index1:index2] for key in columns_to_extract])
-        for sample_file in sample_files
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*LL_frac_OS+1):int(total_number_of_samples*LL_frac_OS+1+test_samples*LL_frac_OS)] for key in columns_to_extract]), 
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*LT_frac_OS+1):int(total_number_of_samples*LT_frac_OS+1+test_samples*LT_frac_OS)] for key in columns_to_extract]),
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*TL_frac_OS+1):int(total_number_of_samples*TL_frac_OS+1+test_samples*TL_frac_OS)] for key in columns_to_extract]),
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*TT_frac_OS+1):int(total_number_of_samples*TT_frac_OS+1+test_samples*TT_frac_OS)] for key in columns_to_extract]), 
     ])
+    print(f'Predicting labels for: {int(test_samples*LL_frac_OS)} LL, {int(test_samples*LT_frac_OS)} LT, {int(test_samples*TL_frac_OS)} TL, {int(test_samples*TT_frac_OS)} TT events')
+elif sample == "both":
+    test_samples = 300000
+
+    LL_frac_SS = 0.02643643
+    LTTL_frac_SS = 0.12454156
+    TT_frac_SS = 0.15067237
+
+    LL_frac_OS = 0.05138295
+    LT_frac_OS = 0.11222112
+    TL_frac_OS = 0.11890663
+    TT_frac_OS = 0.41583894
+
+    if polarization_fraction_biased_test == False:
+        LL_frac_SS = 0.1428571429
+        LTTL_frac_SS = 0.1428571429
+        TT_frac_SS = 0.1428571429
+
+        LL_frac_OS = 0.1428571429
+        LT_frac_OS = 0.1428571429
+        TL_frac_OS = 0.1428571429
+        TT_frac_OS = 0.1428571429
+
+    test_data = np.concatenate([
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*LL_frac_OS+1):int(total_number_of_samples*LL_frac_OS+1+test_samples*LL_frac_OS)] for key in columns_to_extract]), 
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*LT_frac_OS+1):int(total_number_of_samples*LT_frac_OS+1+test_samples*LT_frac_OS)] for key in columns_to_extract]),
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*TL_frac_OS+1):int(total_number_of_samples*TL_frac_OS+1+test_samples*TL_frac_OS)] for key in columns_to_extract]),
+        np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*TT_frac_OS+1):int(total_number_of_samples*TT_frac_OS+1+test_samples*TT_frac_OS)] for key in columns_to_extract]), 
+        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*LL_frac_SS+1):int(total_number_of_samples*LL_frac_SS+1+test_samples*LL_frac_SS)] for key in columns_to_extract]), 
+        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*LTTL_frac_SS+1):int(total_number_of_samples*LTTL_frac_SS+1+test_samples*LTTL_frac_SS)] for key in columns_to_extract]),
+        np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][int(total_number_of_samples*TT_frac_SS+1):int(total_number_of_samples*TT_frac_SS+1+test_samples*TT_frac_SS)] for key in columns_to_extract]), 
+    ])
+    print(f'Predicting labels for: {int(test_samples*LL_frac_OS)} LL_OS, {int(test_samples*LT_frac_OS)} LT, {int(test_samples*TL_frac_OS)} TL, {int(test_samples*TT_frac_OS)} TT_OS, {int(test_samples*LL_frac_SS)} LL_SS, {int(test_samples*LTTL_frac_SS)} LTTL, {int(test_samples*TT_frac_SS)} TT_SS events')
 
 
 # Identify the nodes that have not been activated during training
@@ -216,11 +332,15 @@ polarization_fractions = Counter()
 
 for x in test_data:
     winner_coord = som.winner(x)
-    # polarization_fractions.update({
-    #     k: v for k, v in polarization_probability_dict[winner_coord].items() if v > 0.5
-    # })
-    for pol, v in polarization_probability_dict[winner_coord].items():
-        if v > 0.5:
-            polarization_fractions[pol] = polarization_fractions.get(pol, 0) + 1
+
+    # Polarization fraction cumulation method
+    polarization_fractions.update({
+        k: v for k, v in polarization_probability_dict[winner_coord].items()
+    })
+
+    # Simple majority voting method
+    # for pol, v in polarization_probability_dict[winner_coord].items():
+    #     if v > 0.5:
+    #         polarization_fractions[pol] = polarization_fractions.get(pol, 0) + 1
 
 print(polarization_fractions)

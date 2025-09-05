@@ -4,17 +4,17 @@ import seaborn as sns
 import os
 import pandas as pd
 
-sample = "SS"
-#sample = "OS"
+#sample = "SS"
+sample = "OS"
 
-numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays"
+numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates_filtered"
 if sample == "OS":
     output_dir_within_sample = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/OS/correlations_all_variables"
     sample_files = [
-        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz"
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
     sample_labels = {
         sample_files[0]: "LL",
@@ -25,9 +25,9 @@ if sample == "OS":
 else:
     output_dir_within_sample = "/eos/user/a/apakkila/VBS_ML_project/data_analysis/correlation_analysis/SS/correlations_all_variables"
     sample_files = [
-        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz",
-        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p2POL.npz"
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
     sample_labels = {
         sample_files[0]: "LL",
@@ -39,9 +39,10 @@ os.makedirs(output_dir_within_sample, exist_ok=True)
 
 # Variable groups
 group1_vars = [
-    "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", "V0_pt", "V0_eta", "V0_phi", "V0_mass", "V0_area",
-    "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading", "V1_pt", "V1_eta", "V1_phi", "V1_mass", "V1_area",
-    "VV_deta", "VV_dphi", "VV_mVV", "log_VV_mVV"
+    "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading",
+    "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+    "VV_deta", "VV_dphi", "log_VV_mVV",
+    "TagJJ_deta", "TagJJ_dphi",
 ]
 
 group2_vars = [
@@ -75,11 +76,11 @@ group6_vars = [
 
 variable_groups = {
     "group1_V0_V1": group1_vars,
-    "group2_tag_jets": group2_vars,
-    "group3_subjets": group3_vars,
-    "group4_TagJJ_V0": group4_vars,
-    "group5_TagJJ_V1": group5_vars,
-    "group6_TagJJ_VV": group6_vars
+    # "group2_tag_jets": group2_vars,
+    # "group3_subjets": group3_vars,
+    # "group4_TagJJ_V0": group4_vars,
+    # "group5_TagJJ_V1": group5_vars,
+    # "group6_TagJJ_VV": group6_vars
 }
 
 # Load data
@@ -112,9 +113,9 @@ for sample_file in sample_files:
 
         # Correlation
         corr = df_group.corr()
-        plt.figure(figsize=(len(group_vars) * 0.6, len(group_vars) * 0.6))
+        plt.figure(figsize=(10, 10))
         sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", square=True)
-        plt.title(f"Correlation Matrix: {group_name} ({sample}: {label})")
+        plt.title(f"Correlation matrix: {label} for {sample}")
         plt.tight_layout()
         corr_path = os.path.join(output_dir_within_sample, f"corr_{group_name}_{label}.png")
         plt.savefig(corr_path)
@@ -125,7 +126,7 @@ for sample_file in sample_files:
         cov = df_group.cov()
         plt.figure(figsize=(len(group_vars) * 0.6, len(group_vars) * 0.6))
         sns.heatmap(cov, annot=True, fmt=".2f", cmap="coolwarm", square=True)
-        plt.title(f"Covariance Matrix: {group_name} ({sample}: {label})")
+        plt.title(f"Covariance Matrix: {label} for {sample}")
         plt.tight_layout()
         cov_path = os.path.join(output_dir_within_sample, f"cov_{group_name}_{label}.png")
         plt.savefig(cov_path)

@@ -1,0 +1,14 @@
+executable     = som.sh
+arguments      = $(sample) $(runID) $(learning_rate) $(sigma) $(nsamples)
+
+output         = /eos/user/a/apakkila/VBS_ML_project/logs/$(runID).out
+error          = /eos/user/a/apakkila/VBS_ML_project/logs/$(runID).err
+log            = /eos/user/a/apakkila/VBS_ML_project/logs/$(runID).log
+
++JobFlavour    = "workday"
+
+# Transfer input files if needed
+transfer_input_files = som_model.py
+
+# Example jobs to queue
+queue sample,runID,learning_rate,sigma,nsamples from job_params.txt

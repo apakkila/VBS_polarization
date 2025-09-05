@@ -72,9 +72,11 @@ for sample_name in samples:
 
     df_root = df_root.Define("TagJJ_log_mJJ", "TMath::Log(TagJJ_mJJ)")
 
+    df_root = df_root.Define("TagJJ_dphi_over_VV_dphi", "TagJJ_dphi / VV_dphi")
+
     print(f'Number of rows before filtering: {df_root.Count().GetValue()}')
 
-    # Filter out the entries where either V0_PFCand10_logPt or V0_PFCand10_logE is inf or NaN
+    # Filter out the entries where either V0_PFCand10_logPt or V0_PFCand10_logE is inf osr NaN
     df_root = df_root.Filter("!isnan(V0_PFCand10_logPt) && !isinf(V0_PFCand10_logPt) && !isnan(V0_PFCand10_logPtOverV0) && !isinf(V0_PFCand10_logPtOverV0)")
     df_root = df_root.Filter("!isnan(V0_PFCand10_logE) && !isinf(V0_PFCand10_logE)&& !isnan(V0_PFCand10_logEOverV0) && !isinf(V0_PFCand10_logEOverV0)")
 
@@ -154,6 +156,11 @@ for sample_name in samples:
     histosDict["h_TagJJ_dphi_" + sample_name] = df_root.Histo1D(("h_TagJJ_dphi", "TagJJ dphi distribution", 70, -0.1, 3.25), "TagJJ_dphi")
     histosDict["h_TagJJ_mJJ_" + sample_name] = df_root.Histo1D(("h_TagJJ_mJJ", "TagJJ mJJ distribution", 200, 400, 6000), "TagJJ_mJJ")
     histosDict["h_TagJJ_log_mJJ_" + sample_name] = df_root.Histo1D(("h_TagJJ_log_mJJ", "TagJJ log_mJJ distribution", 200, 6, 9.5), "TagJJ_log_mJJ")
+
+    min_TagJJ_dphi_over_VV_dphi = df_root.Min("TagJJ_dphi_over_VV_dphi").GetValue() - 0.1
+    max_TagJJ_dphi_over_VV_dphi = df_root.Max("TagJJ_dphi_over_VV_dphi").GetValue() + 0.1
+
+    histosDict["h_TagJJ_dphi_over_VV_dphi_" + sample_name] = df_root.Histo1D(("h_TagJJ_dphi_over_VV_dphi", "TagJJ dphi / VV dphi distribution", 100, min_TagJJ_dphi_over_VV_dphi, max_TagJJ_dphi_over_VV_dphi), "TagJJ_dphi_over_VV_dphi")
 
     # TagJet pair
     histosDict["h_TagJet0_pt_" + sample_name] = df_root.Histo1D(("h_TagJet0_pt", "TagJet0_pt", 120, 50, 800), "TagJet0_pt")

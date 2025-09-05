@@ -51,6 +51,7 @@ def plotting_histograms():
         "h_V0_SubJet0_area", "h_V0_SubJet1_area", "h_V1_SubJet0_area", "h_V1_SubJet1_area",
         "h_V0_PFCand10_jetaxisDeta", "h_V0_PFCand10_jetaxisDphi", "h_V0_PFCand10_logPt", "h_V0_PFCand10_logE", "h_V0_PFCand10_logPtOverV0", "h_V0_PFCand10_logEOverV0", "h_V0_PFCand10_deltaR",
         "h_V0_PFCandAll_jetaxisDeta", "h_V0_PFCandAll_jetaxisDphi", "h_V0_PFCandAll_logPt", "h_V0_PFCandAll_logE", "h_V0_PFCandAll_logPtOverV0", "h_V0_PFCandAll_logEOverV0", "h_V0_PFCandAll_deltaR",
+        "h_TagJJ_dphi_over_VV_dphi"
     ]
 
     y_axis_names = [
@@ -67,6 +68,7 @@ def plotting_histograms():
         r"$\mathrm{area}$", r"$\mathrm{area}$", r"$\mathrm{area}$", r"$\mathrm{area}$",
         "h_V0_PFCand10_jetaxisDeta", "h_V0_PFCand10_jetaxisDphi", "h_V0_PFCand10_logPt", "h_V0_PFCand10_logE", "h_V0_PFCand10_logPtOverV0", "h_V0_PFCand10_logEOverV0", "h_V0_PFCand10_deltaR",
         "h_V0_PFCandAll_jetaxisDeta", "h_V0_PFCandAll_jetaxisDphi", "h_V0_PFCandAll_logPt", "h_V0_PFCandAll_logE", "h_V0_PFCandAll_logPtOverV0", "h_V0_PFCandAll_logEOverV0", "h_V0_PFCandAll_deltaR",
+        "h_TagJJ_dphi_over_VV_dphi"
     ]
 
     title_names = [
@@ -83,6 +85,7 @@ def plotting_histograms():
         r"$\mathrm{area}$ of SubJet0 of V0", r"$\mathrm{area}$ of SubJet1 of V0", r"$\mathrm{area}$ of SubJet0 of V1", r"$\mathrm{area}$ of SubJet1 of V1",
         "h_V0_PFCand10_jetaxisDeta", "h_V0_PFCand10_jetaxisDphi", "h_V0_PFCand10_logPt", "h_V0_PFCand10_logE", "h_V0_PFCand10_logPtOverV0", "h_V0_PFCand10_logEOverV0", "h_V0_PFCand10_deltaR",
         "h_V0_PFCandAll_jetaxisDeta", "h_V0_PFCandAll_jetaxisDphi", "h_V0_PFCandAll_logPt", "h_V0_PFCandAll_logE", "h_V0_PFCandAll_logPtOverV0", "h_V0_PFCandAll_logEOverV0", "h_V0_PFCandAll_deltaR",
+        "TagJJ_dphi / VV_dphi"
     ]
 
     if sample_sign == "SS":

@@ -14,6 +14,27 @@ import time
 import re
 from datetime import datetime
 
+
+# import argparse
+
+# parser = argparse.ArgumentParser(description="Train SOM for VBS polarization analysis")
+
+# parser.add_argument("--sample", type=str, required=True, help="Sample type (OS or SS)")
+# parser.add_argument("--runID", type=str, required=True, help="Unique run ID for logging and output")
+# parser.add_argument("--learning_rate", type=float, required=True, help="Learning rate for SOM")
+# parser.add_argument("--sigma", type=float, required=True, help="Sigma for neighborhood function")
+# parser.add_argument("--num_samples", type=int, required=True, help="Number of training samples")
+
+# args = parser.parse_args()
+
+# # Map arguments to variables
+# sample = args.sample
+# runID = args.runID
+# lr = args.learning_rate
+# sigma = args.sigma
+# number_of_samples = args.num_samples
+
+
 def chebyshev_distance(a, b):
     return np.max(np.abs(a - b))
 
@@ -46,17 +67,18 @@ def get_next_run_id(output_dir, prefix="run"):
 #----------------------------------------------------------------------
 
 #sample = "OS"
-sample = "SS"
+#sample = "SS"
+sample = "both"
 
-polarization_fraction_biased = False
+polarization_fraction_biased = True
 
 # Directory containing the input numpy arrays
 #numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/unnormalized_numpy_arrays_with_PF_candidates/with_mirrored_variables"
-numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
+numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates_filtered"
 
 if sample == "OS":
     # Directory to save the trained SOM model weights
-    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/parameter_search/OS"
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/polarization_fraction_biased/OS"
     os.makedirs(output_dir, exist_ok=True)
 
     # List of sample files to load
@@ -72,6 +94,19 @@ elif sample == "SS":
     os.makedirs(output_dir, exist_ok=True)
 
     sample_files = [
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
+    ]
+elif sample == "both":
+    output_dir = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/polarization_fraction_biased/both"
+    os.makedirs(output_dir, exist_ok=True)
+
+    sample_files = [
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
@@ -117,15 +152,21 @@ for sample_file in sample_files:
 #         ]
 
 features = [
-    "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
-    "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+    
+    # For SS sample:
+#     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
+#     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
 
-#     # "V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
+# #     # "V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
-    "VV_deta", "VV_dphi", "log_VV_mVV",
-    # "VV_mVV",
-#     # "VV_dphi_mirrored",  
-    "TagJJ_deta", 
+#     "VV_deta", "VV_dphi", "log_VV_mVV",
+#     # "VV_mVV",
+# #     # "VV_dphi_mirrored",  
+#     "TagJJ_deta", 
+
+    # For OS sample:
+    'V0_p_theta', 'V1_p_theta', 'V0_z_j_leading', 'V1_z_j_leading', 'V0_z_j_subleading', 'V1_z_j_subleading', 'VV_deta', 'VV_dphi', 'log_VV_mVV', 'TagJJ_deta'
+
 #     "TagJJ_dphi", "TagJJ_mJJ",
 #     # "TagJJ_deta_mirrored",
     
@@ -172,7 +213,7 @@ for sample_file in sample_files:
 
 
 if polarization_fraction_biased:
-    total_number_of_samples = 300000
+    total_number_of_samples = 200000
     if sample == "SS":
         training_data = np.concatenate([
             np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in features]),
@@ -181,15 +222,42 @@ if polarization_fraction_biased:
         ])
         print("Polarization fraction biased training dataset for SS")
     elif sample == "OS":
+
+        # LL: 0.07357768 
+        # LT: 0.16069475 
+        # TL: 0.17026805 
+        # TT: 0.59545952
+
         training_data = np.concatenate([
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.1)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.145)] for key in features]),
-            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.61)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.07357768)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.16069475)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.17026805)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.59545952)] for key in features]),
         ])
         print("Polarization fraction biased training dataset for OS")
+    elif sample == "both":
+
+        # LL: 0.02643643
+        # LTTL: 0.12454156
+        # TT: 0.15067237
+
+        # LL: 0.05138295
+        # LT: 0.11222112
+        # TL: 0.11890663
+        # TT: 0.41583894
+
+        training_data = np.concatenate([
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.05138295)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.11222112)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.11890663)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.41583894)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.02643643)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.12454156)] for key in features]),
+            np.column_stack([data_dict["Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"][key][:int(total_number_of_samples*0.15067237)] for key in features])
+        ])
+        print("Polarization fraction biased training dataset for both")
 elif polarization_fraction_biased == False:
-    number_of_samples_per_file = 100000
+    number_of_samples_per_file = 50000
     print(f"Number of samples per file: {number_of_samples_per_file}")
     number_of_samples = len(data_dict) * number_of_samples_per_file
     print(number_of_samples)
@@ -219,22 +287,22 @@ print(f"Training data shape: {training_data.shape}")
 #----------------------------------------------------------------------
 
 # Define the dimensions of the SOM grid computed as sqrt(5*sqrt(number of samples))
-#som_shape = (int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))), int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))))
-som_shape = (80,80)
+som_shape = (int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))), int(np.floor(np.sqrt(5 * np.sqrt(len(training_data))))))
+#som_shape = (100,100)
 
 # # Grid search for hyperparameters
 
 # # # For gaussian, euclidean
-# sigmas = [1.2, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
-# lrs = [0.05, 0.1, 0.2, 0.5, 0.8, 1.0]
+# sigmas = [1.2, 2.0, 3.0, 4.0, 5]
+# lrs = [0.05, 0.2, 0.5, 0.8, 1.0]
 
 # For triangle, cosine
 # sigmas = [1, 2, 3, 4, 5]
 # lrs = [0.01, 0.1, 0.2, 0.5, 1.0]
 
 
-sigmas = [6.0]
-lrs = [0.5]
+sigmas = [4.0]
+lrs = [0.05]
 
 topology = 'hexagonal'  # 'rectangular' or 'hexagonal'
 neighborhood_function = 'gaussian'

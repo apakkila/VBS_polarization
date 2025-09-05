@@ -37,10 +37,11 @@ class ChebyshevSOM(MiniSom):
 # Directory containing the input numpy arrays
 #numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/unnormalized_numpy_arrays_with_PF_candidates/with_mirrored_variables"
 # numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
-numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates"
+numpy_path = "/eos/user/a/apakkila/VBS_ML_project/data/normalized_numpy_arrays_with_PF_candidates_filtered"
 
-#sample = "OS"
-sample = "SS"
+sample = "OS"
+#sample = "SS"
+#sample = "both"
 polarization_fraction_biased = False
 
 
@@ -61,15 +62,33 @@ if sample == "OS":
         "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
     ]
 elif sample == "SS":
-    cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/som/final_plots/guassian_euclidean/regular_variables/with_PF_candidates/SS"
-    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/with_PF_candidates/SS"
+    cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/som/final_plots/guassian_euclidean/regular_variables/100k/SS"
+    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/100k/SS"
 
     os.makedirs(cluster_plots_dir, exist_ok=True)
     os.makedirs(feature_importance_plots_dir, exist_ok=True)
 
-    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/with_PF_candidates/SS"
+    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/100k/SS"
 
     sample_files = [
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
+    ]
+elif sample == "both":
+    cluster_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/cluster_plots/som/final_plots/guassian_euclidean/regular_variables/grid_search/both"
+    feature_importance_plots_dir = "/eos/user/a/apakkila/VBS_ML_project/plots/feature_importance/som/final_plots/guassian_euclidean/regular_variables/grid_search/both"
+
+    os.makedirs(cluster_plots_dir, exist_ok=True)
+    os.makedirs(feature_importance_plots_dir, exist_ok=True)
+
+    weight_dir  = "/eos/user/a/apakkila/VBS_ML_project/models/som_model/final_weights/gaussian_euclidean/regular_variables/grid_search/both"
+
+    sample_files = [
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarLT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
+        "Processed_SampleWPJJWMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarLTTL_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz",
         "Processed_SampleWPMJJWPMJJjj_EWK_PolarTT_FrameWW_LO_4f_mmjj150_ptW300_CategoryBB_Modulereco_Tagv1p5POL.npz"
@@ -96,43 +115,43 @@ data_dict = {}
 
 ## Columns including the first 20 PF candidates
 
-columns_to_extract = [
-    "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
-    "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
+# columns_to_extract = [
+#     "V0_p_theta", "V0_z_j_leading", "V0_z_j_subleading", 
+#     "V1_p_theta", "V1_z_j_leading", "V1_z_j_subleading",
 
 #     #"V0_z_j_subleading_mirrored", "V1_z_j_subleading_mirrored",
 
-    "VV_deta", "VV_dphi", "log_VV_mVV",
+    # "VV_deta", "log_VV_mVV", "VV_dphi",
 
 #     #"VV_dphi_mirrored",  
     
-    "TagJJ_deta", 
+    # "TagJJ_deta", 
     
 #     "TagJJ_dphi", "TagJJ_mJJ",
 
-    "V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDphi", "V0_PFCand10_logPt", "V0_PFCand10_logE", "V0_PFCand10_logPtOverV0", "V0_PFCand10_logEOverV0", "V0_PFCand10_deltaR",
-    "V0_PFCand11_jetaxisDeta", "V0_PFCand11_jetaxisDphi", "V0_PFCand11_logPt", "V0_PFCand11_logE", "V0_PFCand11_logPtOverV0", "V0_PFCand11_logEOverV0", "V0_PFCand11_deltaR",
-    "V0_PFCand12_jetaxisDeta", "V0_PFCand12_jetaxisDphi", "V0_PFCand12_logPt", "V0_PFCand12_logE", "V0_PFCand12_logPtOverV0", "V0_PFCand12_logEOverV0", "V0_PFCand12_deltaR",
-    "V0_PFCand13_jetaxisDeta", "V0_PFCand13_jetaxisDphi", "V0_PFCand13_logPt", "V0_PFCand13_logE", "V0_PFCand13_logPtOverV0", "V0_PFCand13_logEOverV0", "V0_PFCand13_deltaR",
-    "V0_PFCand14_jetaxisDeta", "V0_PFCand14_jetaxisDphi", "V0_PFCand14_logPt", "V0_PFCand14_logE", "V0_PFCand14_logPtOverV0", "V0_PFCand14_logEOverV0", "V0_PFCand14_deltaR",
-    "V0_PFCand15_jetaxisDeta", "V0_PFCand15_jetaxisDphi", "V0_PFCand15_logPt", "V0_PFCand15_logE", "V0_PFCand15_logPtOverV0", "V0_PFCand15_logEOverV0", "V0_PFCand15_deltaR",
-    "V0_PFCand16_jetaxisDeta", "V0_PFCand16_jetaxisDphi", "V0_PFCand16_logPt", "V0_PFCand16_logE", "V0_PFCand16_logPtOverV0", "V0_PFCand16_logEOverV0", "V0_PFCand16_deltaR",
-    "V0_PFCand17_jetaxisDeta", "V0_PFCand17_jetaxisDphi", "V0_PFCand17_logPt", "V0_PFCand17_logE", "V0_PFCand17_logPtOverV0", "V0_PFCand17_logEOverV0", "V0_PFCand17_deltaR",
-    "V0_PFCand18_jetaxisDeta", "V0_PFCand18_jetaxisDphi", "V0_PFCand18_logPt", "V0_PFCand18_logE", "V0_PFCand18_logPtOverV0", "V0_PFCand18_logEOverV0", "V0_PFCand18_deltaR",
-    "V0_PFCand19_jetaxisDeta", "V0_PFCand19_jetaxisDphi", "V0_PFCand19_logPt", "V0_PFCand19_logE", "V0_PFCand19_logPtOverV0", "V0_PFCand19_logEOverV0", "V0_PFCand19_deltaR",
+    # "V0_PFCand10_jetaxisDeta", "V0_PFCand10_jetaxisDphi", "V0_PFCand10_logPt", "V0_PFCand10_logE", "V0_PFCand10_logPtOverV0", "V0_PFCand10_logEOverV0", "V0_PFCand10_deltaR",
+    # "V0_PFCand11_jetaxisDeta", "V0_PFCand11_jetaxisDphi", "V0_PFCand11_logPt", "V0_PFCand11_logE", "V0_PFCand11_logPtOverV0", "V0_PFCand11_logEOverV0", "V0_PFCand11_deltaR",
+    # "V0_PFCand12_jetaxisDeta", "V0_PFCand12_jetaxisDphi", "V0_PFCand12_logPt", "V0_PFCand12_logE", "V0_PFCand12_logPtOverV0", "V0_PFCand12_logEOverV0", "V0_PFCand12_deltaR",
+    # "V0_PFCand13_jetaxisDeta", "V0_PFCand13_jetaxisDphi", "V0_PFCand13_logPt", "V0_PFCand13_logE", "V0_PFCand13_logPtOverV0", "V0_PFCand13_logEOverV0", "V0_PFCand13_deltaR",
+    # "V0_PFCand14_jetaxisDeta", "V0_PFCand14_jetaxisDphi", "V0_PFCand14_logPt", "V0_PFCand14_logE", "V0_PFCand14_logPtOverV0", "V0_PFCand14_logEOverV0", "V0_PFCand14_deltaR",
+    # "V0_PFCand15_jetaxisDeta", "V0_PFCand15_jetaxisDphi", "V0_PFCand15_logPt", "V0_PFCand15_logE", "V0_PFCand15_logPtOverV0", "V0_PFCand15_logEOverV0", "V0_PFCand15_deltaR",
+    # "V0_PFCand16_jetaxisDeta", "V0_PFCand16_jetaxisDphi", "V0_PFCand16_logPt", "V0_PFCand16_logE", "V0_PFCand16_logPtOverV0", "V0_PFCand16_logEOverV0", "V0_PFCand16_deltaR",
+    # "V0_PFCand17_jetaxisDeta", "V0_PFCand17_jetaxisDphi", "V0_PFCand17_logPt", "V0_PFCand17_logE", "V0_PFCand17_logPtOverV0", "V0_PFCand17_logEOverV0", "V0_PFCand17_deltaR",
+    # "V0_PFCand18_jetaxisDeta", "V0_PFCand18_jetaxisDphi", "V0_PFCand18_logPt", "V0_PFCand18_logE", "V0_PFCand18_logPtOverV0", "V0_PFCand18_logEOverV0", "V0_PFCand18_deltaR",
+    # "V0_PFCand19_jetaxisDeta", "V0_PFCand19_jetaxisDphi", "V0_PFCand19_logPt", "V0_PFCand19_logE", "V0_PFCand19_logPtOverV0", "V0_PFCand19_logEOverV0", "V0_PFCand19_deltaR",
 
 
-    "V1_PFCand10_jetaxisDeta", "V1_PFCand10_jetaxisDphi", "V1_PFCand10_logPt", "V1_PFCand10_logE", "V1_PFCand10_logPtOverV1", "V1_PFCand10_logEOverV1", "V1_PFCand10_deltaR",
-    "V1_PFCand11_jetaxisDeta", "V1_PFCand11_jetaxisDphi", "V1_PFCand11_logPt", "V1_PFCand11_logE", "V1_PFCand11_logPtOverV1", "V1_PFCand11_logEOverV1", "V1_PFCand11_deltaR",
-    "V1_PFCand12_jetaxisDeta", "V1_PFCand12_jetaxisDphi", "V1_PFCand12_logPt", "V1_PFCand12_logE", "V1_PFCand12_logPtOverV1", "V1_PFCand12_logEOverV1", "V1_PFCand12_deltaR",
-    "V1_PFCand13_jetaxisDeta", "V1_PFCand13_jetaxisDphi", "V1_PFCand13_logPt", "V1_PFCand13_logE", "V1_PFCand13_logPtOverV1", "V1_PFCand13_logEOverV1", "V1_PFCand13_deltaR",
-    "V1_PFCand14_jetaxisDeta", "V1_PFCand14_jetaxisDphi", "V1_PFCand14_logPt", "V1_PFCand14_logE", "V1_PFCand14_logPtOverV1", "V1_PFCand14_logEOverV1", "V1_PFCand14_deltaR",
-    "V1_PFCand15_jetaxisDeta", "V1_PFCand15_jetaxisDphi", "V1_PFCand15_logPt", "V1_PFCand15_logE", "V1_PFCand15_logPtOverV1", "V1_PFCand15_logEOverV1", "V1_PFCand15_deltaR",
-    "V1_PFCand16_jetaxisDeta", "V1_PFCand16_jetaxisDphi", "V1_PFCand16_logPt", "V1_PFCand16_logE", "V1_PFCand16_logPtOverV1", "V1_PFCand16_logEOverV1", "V1_PFCand16_deltaR",
-    "V1_PFCand17_jetaxisDeta", "V1_PFCand17_jetaxisDphi", "V1_PFCand17_logPt", "V1_PFCand17_logE", "V1_PFCand17_logPtOverV1", "V1_PFCand17_logEOverV1", "V1_PFCand17_deltaR",
-    "V1_PFCand18_jetaxisDeta", "V1_PFCand18_jetaxisDphi", "V1_PFCand18_logPt", "V1_PFCand18_logE", "V1_PFCand18_logPtOverV1", "V1_PFCand18_logEOverV1", "V1_PFCand18_deltaR",
-    "V1_PFCand19_jetaxisDeta", "V1_PFCand19_jetaxisDphi", "V1_PFCand19_logPt", "V1_PFCand19_logE", "V1_PFCand19_logPtOverV1", "V1_PFCand19_logEOverV1", "V1_PFCand19_deltaR",
-]
+    # "V1_PFCand10_jetaxisDeta", "V1_PFCand10_jetaxisDphi", "V1_PFCand10_logPt", "V1_PFCand10_logE", "V1_PFCand10_logPtOverV1", "V1_PFCand10_logEOverV1", "V1_PFCand10_deltaR",
+    # "V1_PFCand11_jetaxisDeta", "V1_PFCand11_jetaxisDphi", "V1_PFCand11_logPt", "V1_PFCand11_logE", "V1_PFCand11_logPtOverV1", "V1_PFCand11_logEOverV1", "V1_PFCand11_deltaR",
+    # "V1_PFCand12_jetaxisDeta", "V1_PFCand12_jetaxisDphi", "V1_PFCand12_logPt", "V1_PFCand12_logE", "V1_PFCand12_logPtOverV1", "V1_PFCand12_logEOverV1", "V1_PFCand12_deltaR",
+    # "V1_PFCand13_jetaxisDeta", "V1_PFCand13_jetaxisDphi", "V1_PFCand13_logPt", "V1_PFCand13_logE", "V1_PFCand13_logPtOverV1", "V1_PFCand13_logEOverV1", "V1_PFCand13_deltaR",
+    # "V1_PFCand14_jetaxisDeta", "V1_PFCand14_jetaxisDphi", "V1_PFCand14_logPt", "V1_PFCand14_logE", "V1_PFCand14_logPtOverV1", "V1_PFCand14_logEOverV1", "V1_PFCand14_deltaR",
+    # "V1_PFCand15_jetaxisDeta", "V1_PFCand15_jetaxisDphi", "V1_PFCand15_logPt", "V1_PFCand15_logE", "V1_PFCand15_logPtOverV1", "V1_PFCand15_logEOverV1", "V1_PFCand15_deltaR",
+    # "V1_PFCand16_jetaxisDeta", "V1_PFCand16_jetaxisDphi", "V1_PFCand16_logPt", "V1_PFCand16_logE", "V1_PFCand16_logPtOverV1", "V1_PFCand16_logEOverV1", "V1_PFCand16_deltaR",
+    # "V1_PFCand17_jetaxisDeta", "V1_PFCand17_jetaxisDphi", "V1_PFCand17_logPt", "V1_PFCand17_logE", "V1_PFCand17_logPtOverV1", "V1_PFCand17_logEOverV1", "V1_PFCand17_deltaR",
+    # "V1_PFCand18_jetaxisDeta", "V1_PFCand18_jetaxisDphi", "V1_PFCand18_logPt", "V1_PFCand18_logE", "V1_PFCand18_logPtOverV1", "V1_PFCand18_logEOverV1", "V1_PFCand18_deltaR",
+    # "V1_PFCand19_jetaxisDeta", "V1_PFCand19_jetaxisDphi", "V1_PFCand19_logPt", "V1_PFCand19_logE", "V1_PFCand19_logPtOverV1", "V1_PFCand19_logEOverV1", "V1_PFCand19_deltaR",
+# ]
 
 ## Columns with variables with mirrored values
 
@@ -150,20 +169,23 @@ columns_to_extract = [
 #     "TagJJ_deta_mirrored", 
 # ]
 
-# columns_to_extract = [
-#     "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
-#     "VV_deta", "VV_dphi", "log_VV_mVV",
-#     "TagJJ_deta", "TagJJ_dphi", #"TagJJ_mJJ",
+columns_to_extract = [
+    # "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
+    # "VV_deta", "log_VV_mVV", "VV_dphi",
+    # "TagJJ_deta",#"TagJJ_dphi", #"TagJJ_mJJ",
+
+    'V0_p_theta', 'V1_p_theta', 'V0_z_j_leading', 'V1_z_j_leading', 'V0_z_j_subleading', 'V1_z_j_subleading', 'VV_deta', 'VV_dphi', 'TagJJ_deta' # OS
+
 #     #"log_TagJJ_mJJ",
 #     #"log_TagJet0_mass", "log_TagJet1_mass",
 #     #"log_TagJet0_pt", "log_TagJet1_pt",
-# ]
+]
 
-# feature_names = [
-#     r"$p_{\theta}$ of V0", r"$p_{\theta}$ of V1", r"$z^{leading}_{j}$ of V0", r"$z^{leading}_{j}$ of V1", r"$z^{subleading}_{j}$ of V0", r"$z^{subleading}_{j}$ of V1", 
-#     r"$\Delta\eta$ of VV", r"$\Delta\phi$ of VV", r"log($m_{VV}$) of VV", 
-#     r"$\Delta\eta$ of TagJJ", r"$\Delta\phi$ of TagJJ", #r"log($m_{JJ})$ of TagJJ",
-# ]
+feature_names = [
+    r"$p_{\theta}$ of V0", r"$p_{\theta}$ of V1", r"$z^{leading}_{j}$ of V0", r"$z^{leading}_{j}$ of V1", r"$z^{subleading}_{j}$ of V0", r"$z^{subleading}_{j}$ of V1", 
+    r"$\Delta\eta$ of VV", r"$\Delta\phi$ of VV", #r"log($m_{VV}$) of VV", 
+    r"$\Delta\eta$ of TagJJ", #r"$\Delta\phi$ of TagJJ", #r"log($m_{JJ})$ of TagJJ",
+]
 
 # columns_to_extract = [
 #     "V0_p_theta", "V1_p_theta", "V0_z_j_leading", "V1_z_j_leading", "V0_z_j_subleading", "V1_z_j_subleading", 
@@ -191,7 +213,7 @@ for sample_file in sample_files:
         print(f"  {key}: {len(array)}")
 
 # Define run_id
-run_id = "run002"
+run_id = "run006"
 
 # Find matching weight file with the corresponding run_id
 matching_files = [f for f in os.listdir(weight_dir) if run_id in f and f.endswith(".p")]
@@ -337,7 +359,7 @@ polarizations = ['LL', 'LT', 'TL', 'TT'] if sample == "OS" else ['LL', 'LTTL', '
 fractions_SS = [0.1, 0.29, 0.61]
 fractions_OS = [0.1, 0.145, 0.145, 0.61]
 
-# Step 1: Loop through each sample file separately
+# Step 1: Loop through each sample file separately to create density map for each polarization
 for sf_idx, sample_file in enumerate(sample_files):
 
     # Extract the training data for this specific file
@@ -356,18 +378,20 @@ for sf_idx, sample_file in enumerate(sample_files):
             data_dict[sample_file][key][:number_of_samples_per_file] for key in columns_to_extract
         ])
 
-    # Select the last 1% of the rows for density map plotting
-    last_1pct_count = max(1, int(1 * len(data_this_file)))
-    data_last_1pct = data_this_file[-last_1pct_count:]
+    # Select which part of the data to use for density map
+    part_of_data = max(1, int(1 * len(data_this_file)))
+    data_last = data_this_file[-part_of_data:]
 
     # Step 2: Count points assigned to each neuron
     point_counts = np.zeros((weights.shape[0], weights.shape[1]), dtype=int)
-    for x in data_last_1pct:
+    for x in data_last:
         w = som.winner(x)  # (i, j)
         point_counts[w] += 1
 
     # Step 3: Normalize to [0,1] for colormap
     max_count = point_counts.max()
+    #max_count = np.sum(point_counts)  # Normalize by total number of points
+    print(max_count)
     density_map = point_counts / max_count if max_count > 0 else point_counts
 
     # Step 4: Plot density map for this file
@@ -429,11 +453,11 @@ for sf_idx, sample_file in enumerate(sample_files):
 xx, yy = som.get_euclidean_coordinates()
 weights = som.get_weights()  # shape: (X_nodes, Y_nodes, num_features)
 
-plt.figure(figsize=(25, 60))
+plt.figure(figsize=(10, 15))
 for i, f in enumerate(columns_to_extract):
-    ax = plt.subplot(22, 7, i+1)
+    ax = plt.subplot(9, 3, i+1)
     ax.set_aspect('equal')
-    ax.set_title(columns_to_extract[i])
+    ax.set_title(feature_names[i])
 
     # Plot each neuron as a hexagon colored by feature value
     for xi in range(weights.shape[0]):
@@ -531,70 +555,70 @@ for (f1, f2) in combinations(sample_files, 2):
     print(f"  Symmetric overlap fraction: {overlap_symmetric:.3f}")
     print(f"  Pearson correlation: {correlation:.3f}")
 
-# if sample == "SS":
-#     D_LL = density_maps[sample_files[0]]
-#     D_LTTL = density_maps[sample_files[1]]
-#     D_TT = density_maps[sample_files[2]]
+if sample == "SS":
+    D_LL = density_maps[sample_files[0]]
+    D_LTTL = density_maps[sample_files[1]]
+    D_TT = density_maps[sample_files[2]]
 
-#     overlap_LL_LTTL = (np.sum(np.minimum(D_LL, D_LTTL)) /
-#                          np.sum(np.maximum(D_LL, D_LTTL)))
+    overlap_LL_LTTL = (np.sum(np.minimum(D_LL, D_LTTL)) /
+                         np.sum(np.maximum(D_LL, D_LTTL)))
     
-#     overlap_LL_TT = (np.sum(np.minimum(D_LL, D_TT)) /
-#                          np.sum(np.maximum(D_LL, D_TT)))
+    overlap_LL_TT = (np.sum(np.minimum(D_LL, D_TT)) /
+                         np.sum(np.maximum(D_LL, D_TT)))
 
-#     overlap_LL_LTTL_TT = (np.sum(np.minimum(D_LL, D_LTTL, D_TT)) /
-#                          np.sum(np.maximum(D_LL, D_LTTL, D_TT)))
+    overlap_LL_LTTL_TT = (np.sum(np.minimum(D_LL, D_LTTL, D_TT)) /
+                         np.sum(np.maximum(D_LL, D_LTTL, D_TT)))
 
-#     print(f"Overlap fraction LL vs LL: {overlap_LL_LTTL:.3f}")
-#     print(f"Overlap fraction LL vs LT: {overlap_LL_TT:.3f}")
-#     print(f"Overlap fraction LL vs TL: {overlap_LL_LTTL_TT:.3f}")
-# else:
-#     D_LL = density_maps[sample_files[0]]
-#     D_LT = density_maps[sample_files[1]]
-#     D_TL = density_maps[sample_files[2]]
-#     D_TT = density_maps[sample_files[3]]
+    print(f"Overlap fraction LL vs LL: {overlap_LL_LTTL:.3f}")
+    print(f"Overlap fraction LL vs LT: {overlap_LL_TT:.3f}")
+    print(f"Overlap fraction LL vs TL: {overlap_LL_LTTL_TT:.3f}")
+else:
+    D_LL = density_maps[sample_files[0]]
+    D_LT = density_maps[sample_files[1]]
+    D_TL = density_maps[sample_files[2]]
+    D_TT = density_maps[sample_files[3]]
 
-#     # LL vs LL
-#     intersection_LL_LL = np.where((D_LL > 0) & (D_LL > 0), np.minimum(D_LL, D_LL), 0)
-#     overlap_fraction_LL_LL = np.sum(intersection_LL_LL) / np.sum(D_LL)
+    # LL vs LL
+    intersection_LL_LL = np.where((D_LL > 0) & (D_LL > 0), np.minimum(D_LL, D_LL), 0)
+    overlap_fraction_LL_LL = np.sum(intersection_LL_LL) / np.sum(D_LL)
 
-#     # LL vs LT
-#     intersection_LL_LT = np.where((D_LL > 0) & (D_LT > 0), np.minimum(D_LL, D_LT), 0)
-#     overlap_fraction_LL_LT = np.sum(intersection_LL_LT) / np.sum(D_LL)
+    # LL vs LT
+    intersection_LL_LT = np.where((D_LL > 0) & (D_LT > 0), np.minimum(D_LL, D_LT), 0)
+    overlap_fraction_LL_LT = np.sum(intersection_LL_LT) / np.sum(D_LL)
 
-#     # LL vs TL
-#     intersection_LL_TL = np.where((D_LL > 0) & (D_TL > 0), np.minimum(D_LL, D_TL), 0)
-#     overlap_fraction_LL_TL = np.sum(intersection_LL_TL) / np.sum(D_LL)
+    # LL vs TL
+    intersection_LL_TL = np.where((D_LL > 0) & (D_TL > 0), np.minimum(D_LL, D_TL), 0)
+    overlap_fraction_LL_TL = np.sum(intersection_LL_TL) / np.sum(D_LL)
 
-#     # LL vs TT
-#     intersection_LL_TT = np.where((D_LL > 0) & (D_TT > 0), np.minimum(D_LL, D_TT), 0)
-#     overlap_fraction_LL_TT = np.sum(intersection_LL_TT) / np.sum(D_LL)
+    # LL vs TT
+    intersection_LL_TT = np.where((D_LL > 0) & (D_TT > 0), np.minimum(D_LL, D_TT), 0)
+    overlap_fraction_LL_TT = np.sum(intersection_LL_TT) / np.sum(D_LL)
 
-#     # LL vs LT, TL
-#     intersection_LL_LT_TL = np.where((D_LL > 0) & (D_LT > 0) & (D_TL > 0), np.minimum.reduce([D_LL, D_LT, D_TL]), 0)
-#     overlap_fraction_LL_LT_TL = np.sum(intersection_LL_LT_TL) / np.sum(D_LL)
+    # LL vs LT, TL
+    intersection_LL_LT_TL = np.where((D_LL > 0) & (D_LT > 0) & (D_TL > 0), np.minimum.reduce([D_LL, D_LT, D_TL]), 0)
+    overlap_fraction_LL_LT_TL = np.sum(intersection_LL_LT_TL) / np.sum(D_LL)
 
-#     # LL vs LT, TT
-#     intersection_LL_LT_TT = np.where((D_LL > 0) & (D_LT > 0) & (D_TT > 0), np.minimum.reduce([D_LL, D_LT, D_TT]), 0)
-#     overlap_fraction_LL_LT_TT = np.sum(intersection_LL_LT_TT) / np.sum(D_LL)
+    # LL vs LT, TT
+    intersection_LL_LT_TT = np.where((D_LL > 0) & (D_LT > 0) & (D_TT > 0), np.minimum.reduce([D_LL, D_LT, D_TT]), 0)
+    overlap_fraction_LL_LT_TT = np.sum(intersection_LL_LT_TT) / np.sum(D_LL)
 
-#     # LL vs TL, TT
-#     intersection_LL_TL_TT = np.where((D_LL > 0) & (D_TL > 0) & (D_TT > 0), np.minimum.reduce([D_LL, D_TL, D_TT]), 0)
-#     overlap_fraction_LL_TL_TT = np.sum(intersection_LL_TL_TT) / np.sum(D_LL)
+    # LL vs TL, TT
+    intersection_LL_TL_TT = np.where((D_LL > 0) & (D_TL > 0) & (D_TT > 0), np.minimum.reduce([D_LL, D_TL, D_TT]), 0)
+    overlap_fraction_LL_TL_TT = np.sum(intersection_LL_TL_TT) / np.sum(D_LL)
 
-#     # LT vs LT, TL, TT
-#     intersection_LL_LT_TL_TT = np.where((D_LL > 0) & (D_LT > 0) & (D_TL > 0) & (D_TT > 0), np.minimum.reduce([D_LL, D_LT, D_TL, D_TT]), 0)
-#     overlap_fraction_LL_LT_TL_TT = np.sum(intersection_LL_LT_TL_TT) / np.sum(D_LL)
+    # LT vs LT, TL, TT
+    intersection_LL_LT_TL_TT = np.where((D_LL > 0) & (D_LT > 0) & (D_TL > 0) & (D_TT > 0), np.minimum.reduce([D_LL, D_LT, D_TL, D_TT]), 0)
+    overlap_fraction_LL_LT_TL_TT = np.sum(intersection_LL_LT_TL_TT) / np.sum(D_LL)
 
-#     # Print overlap fractions
-#     print(f"Overlap fraction LL vs LL: {overlap_fraction_LL_LL:.3f}")
-#     print(f"Overlap fraction LL vs LT: {overlap_fraction_LL_LT:.3f}")
-#     print(f"Overlap fraction LL vs TL: {overlap_fraction_LL_TL:.3f}")
-#     print(f"Overlap fraction LL vs TT: {overlap_fraction_LL_TT:.3f}")
-#     print(f"Overlap fraction LL vs LT, TL: {overlap_fraction_LL_LT_TL:.3f}")
-#     print(f"Overlap fraction LL vs LT, TT: {overlap_fraction_LL_LT_TT:.3f}")
-#     print(f"Overlap fraction LL vs TL, TT: {overlap_fraction_LL_TL_TT:.3f}")
-#     print(f"Overlap fraction LL vs LT, TL, TT: {overlap_fraction_LL_LT_TL_TT:.3f}")
+    # Print overlap fractions
+    print(f"Overlap fraction LL vs LL: {overlap_fraction_LL_LL:.3f}")
+    print(f"Overlap fraction LL vs LT: {overlap_fraction_LL_LT:.3f}")
+    print(f"Overlap fraction LL vs TL: {overlap_fraction_LL_TL:.3f}")
+    print(f"Overlap fraction LL vs TT: {overlap_fraction_LL_TT:.3f}")
+    print(f"Overlap fraction LL vs LT, TL: {overlap_fraction_LL_LT_TL:.3f}")
+    print(f"Overlap fraction LL vs LT, TT: {overlap_fraction_LL_LT_TT:.3f}")
+    print(f"Overlap fraction LL vs TL, TT: {overlap_fraction_LL_TL_TT:.3f}")
+    print(f"Overlap fraction LL vs LT, TL, TT: {overlap_fraction_LL_LT_TL_TT:.3f}")
 
 
 
